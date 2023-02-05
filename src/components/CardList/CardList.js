@@ -1,17 +1,17 @@
 import React from 'react';
 import Card from '../Card/Card';
 
-const CardList = ({ robots, onMentorSignup }) => {
+const CardList = ({ mentors, onMentorSignup }) => {
   return (
     <div>
       {
-        robots.map((user, i) => {
+        mentors.map((user, i) => {
           return (
             <Card
               key={i}
-              id={robots[i].id}
-              name={robots[i].name}
-              email={robots[i].email}
+              id={mentors[i].id}
+              name={mentors[i].name}
+              email={mentors[i].email}
               onMentorSignup={onMentorSignup}
               />
           );

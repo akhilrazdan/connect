@@ -15,16 +15,17 @@ const initialState = {
   input: '',
   imageUrl: '',
   box: {},
-  route: 'home',
-  isSignedIn: true,
+  route: 'signin',
+  isSignedIn: false,
   user: {
     id: '1',
-    name: 'Hello',
-    email: 'hello',
+    name: '',
+    email: '',
     entries: 0,
-    joined: ''
+    joined: '',
+    signupsTotal: 0
   },
-  robots: [],
+  mentors: [],
   searchfield: ''
 }
 
@@ -41,7 +42,8 @@ class App extends Component {
         name: data.name,
         email: data.email,
         entries: data.entries,
-        joined: data.joined
+        joined: data.joined,
+        signupsTotal: parseInt(data.signups_total)
       }
     })
   }
@@ -69,13 +71,22 @@ class App extends Component {
 
   onMentorSignup = (mentor) => {
     console.log(`Signing up mentor : ${mentor.id} to mentee (${this.state.user.id}, ${this.state.user.name}) `);
-    // fetch('http://localhost:3000/mentorSignup', {
-    //   method: 'post',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({
-    //     mentee: this.state.email
-    //   })
-    // })
+    fetch('http://localhost:3000/mentorSignup', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mentee: this.state.user.id,
+        mentor: mentor.id
+      })
+    }).then(response => response.json())
+      .then(response => {
+        if (response === 'Success') {
+          this.setState(Object.assign(this.state.user, { signupsTotal: this.state.user.signupsTotal + 1 }))
+        } 
+      })
+      .catch(err => {
+        // console.log(err)
+      })
   }
 
   onButtonSubmit = () => {
@@ -121,13 +132,13 @@ class App extends Component {
   componentDidMount() {
     fetch('http://localhost:3000/mentors')
       .then(response => response.json())
-      .then(users => { this.setState({ robots: users }) });
+      .then(users => { this.setState({ mentors: users }) });
   }
 
   render() {
-    const { robots, searchfield } = this.state;
-    const filteredRobots = robots.filter(robot => {
-      return robot.name.toLowerCase().includes(searchfield.toLowerCase());
+    const { mentors, searchfield } = this.state;
+    const filteredmentors = mentors.filter(mentor => {
+      return mentor.name.toLowerCase().includes(searchfield.toLowerCase());
     })
     const { isSignedIn, imageUrl, route, box } = this.state;
     return (
@@ -139,9 +150,9 @@ class App extends Component {
             <Logo />
             <Rank
               name={this.state.user.name}
-              entries={this.state.user.entries}
+              signupsTotal={this.state.user.signupsTotal}
             />
-            <CardList robots={filteredRobots} onMentorSignup={this.onMentorSignup} />
+            <CardList mentors={filteredmentors} onMentorSignup={this.onMentorSignup} />
 
             {/* <ImageLinkForm
                 onInputChange={this.onInputChange}
