@@ -67,8 +67,8 @@ class App extends Component {
     this.setState({ input: event.target.value });
   }
 
-  onMentorSignup = () => {
-    console.log("Signing up! " + this.state.user.email);
+  onMentorSignup = (mentor) => {
+    console.log(`Signing up mentor : ${mentor.id} to mentee (${this.state.user.id}, ${this.state.user.name}) `);
     // fetch('http://localhost:3000/mentorSignup', {
     //   method: 'post',
     //   headers: { 'Content-Type': 'application/json' },
@@ -119,7 +119,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    fetch('https://jsonplaceholder.typicode.com/users')
+    fetch('http://localhost:3000/mentors')
       .then(response => response.json())
       .then(users => { this.setState({ robots: users }) });
   }

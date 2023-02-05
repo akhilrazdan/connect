@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 const Card = ({ name, email, id, onMentorSignup }) => {
   return (
     <div className='tc grow bg-light-green br3 pa3 ma2 dib bw2 shadow-5'>
@@ -7,7 +8,8 @@ const Card = ({ name, email, id, onMentorSignup }) => {
       <div>
         <h2>{name}</h2>
         <p>{email}</p>
-        <button onClick={onMentorSignup}>Sign up</button>
+        <button className="b ph3 pv3 input-reset ba b--black  grow pointer f6 dib"
+          onClick={() => onMentorSignup({ name, email, id })}>Sign up</button>
       </div>
     </div>
   );
