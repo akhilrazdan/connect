@@ -25,7 +25,6 @@ const initialState = {
     joined: '',
     signupsTotal: 0
   },
-  mentors: [],
   searchfield: ''
 }
 
@@ -69,26 +68,6 @@ class App extends Component {
     this.setState({ input: event.target.value });
   }
 
-  onMentorSignup = (mentor) => {
-    console.log(`Signing up mentor : ${mentor.id} to mentee (${this.state.user.id}, ${this.state.user.name}) `);
-    fetch('http://localhost:3000/mentorSignup', {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        mentee: this.state.user.id,
-        mentor: mentor.id
-      })
-    }).then(response => response.json())
-      .then(response => {
-        if (response === 'Success') {
-          this.setState(Object.assign(this.state.user, { signupsTotal: this.state.user.signupsTotal + 1 }))
-        } 
-      })
-      .catch(err => {
-        // console.log(err)
-      })
-  }
-
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input });
     fetch('http://localhost:3000/imageurl', {
@@ -129,17 +108,11 @@ class App extends Component {
     this.setState({ route: route });
   }
 
-  componentDidMount() {
-    fetch('http://localhost:3000/mentors')
-      .then(response => response.json())
-      .then(users => { this.setState({ mentors: users }) });
-  }
-
   render() {
     const { mentors, searchfield } = this.state;
-    const filteredmentors = mentors.filter(mentor => {
-      return mentor.name.toLowerCase().includes(searchfield.toLowerCase());
-    })
+    // const filteredmentors = mentors.filter(mentor => {
+    //   return mentor.name.toLowerCase().includes(searchfield.toLowerCase());
+    // })
     const { isSignedIn, imageUrl, route, box } = this.state;
     return (
       <div className="App">
@@ -152,7 +125,7 @@ class App extends Component {
               name={this.state.user.name}
               signupsTotal={this.state.user.signupsTotal}
             />
-            <CardList mentors={filteredmentors} onMentorSignup={this.onMentorSignup} />
+            <CardList menteeId={this.state.user.id} />
 
             {/* <ImageLinkForm
                 onInputChange={this.onInputChange}
