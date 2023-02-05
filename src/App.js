@@ -98,6 +98,13 @@ class App extends Component {
       })
       .catch(err => console.log(err));
   }
+  error = (message) => {
+    this.setState({ errMessage: message })
+  }
+
+  incrementSignups = () => {
+    this.setState(Object.assign(this.state.user, { signupsTotal: this.state.user.signupsTotal + 1 }))
+  }
 
   onRouteChange = (route) => {
     if (route === 'signout') {
@@ -125,7 +132,7 @@ class App extends Component {
               name={this.state.user.name}
               signupsTotal={this.state.user.signupsTotal}
             />
-            <CardList menteeId={this.state.user.id} />
+            <CardList loadUser={this.loadUser} error={this.error} menteeId={this.state.user.id} />
 
             {/* <ImageLinkForm
                 onInputChange={this.onInputChange}

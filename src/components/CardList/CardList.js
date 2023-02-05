@@ -1,5 +1,6 @@
 import React from 'react';
 import Card from '../Card/Card';
+import Rank from '../Rank/Rank';
 
 class CardList extends React.Component {
   constructor(props) {
@@ -9,8 +10,8 @@ class CardList extends React.Component {
     }
   }
   updateMentors = () => {
-    console.log("Retrieving fresh mentors")
-    fetch('http://localhost:3000/mentors')
+    console.log("API: gettingMentors")
+    fetch(`http://localhost:3000/mentors/${this.props.menteeId}`)
       .then(response => response.json())
       .then(mentors_ => {
         console.log(mentors_);
@@ -19,7 +20,7 @@ class CardList extends React.Component {
       });
   }
   onMentorSignup = (mentor) => {
-    console.log(`Signing up mentor : ${mentor.id} to mentee (${this.props.menteeId}) `);
+    console.log(`API: Signing up mentor : ${mentor.id} to mentee (${this.props.menteeId}) `);
     fetch('http://localhost:3000/mentorSignup', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
@@ -28,30 +29,36 @@ class CardList extends React.Component {
         mentor: mentor.id
       })
     }).then(response => response.json())
-      .then(mentors_ => {
-        if (Array.isArray(mentors_)) {
-          console.log("Recieved mentors")
-          console.log(mentors_)
-          this.setState({ mentors: mentors_ });
+      .then(response => {
+        if (response.mentors) {
+          console.log("Recieved mentors" + response.mentors)
+          this.setState({ mentors: response.mentors });
         }
         else {
-          console.log("Error: " + mentors_)
+          console.log("Error: " + response)
+          // this.props.error()
           this.updateMentors()
         }
       })
       .catch(err => {
         console.log(err)
+        this.props.error()
         this.updateMentors()
       })
   }
   componentDidMount() {
     // TODO should only load when signed in
     // Remaining choices is not correct in debugging mode
-    fetch('http://localhost:3000/mentors')
+    fetch(`http://localhost:3000/mentors/${this.props.menteeId}`)
       .then(response => response.json())
-      .then(mentors_ => {
-        console.log(mentors_);
-        this.setState({ mentors: mentors_ });
+      .then(response => {
+        if (response.mentors){
+          console.log(response);
+          this.setState({ mentors: response.mentors });
+        } else{
+          console.error("Error: " + response)
+        }
+
       });
   }
 
@@ -68,6 +75,7 @@ class CardList extends React.Component {
                 name={mentor.name}
                 email={mentor.email}
                 availableSlots={mentor.available_slots}
+                isRegistered={mentor.registered === 'true'}
                 onMentorSignup={this.onMentorSignup}
               />
             );
