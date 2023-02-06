@@ -1,38 +1,44 @@
 import React from 'react';
+import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
+import { trackPromise } from 'react-promise-tracker';
 
 class Signin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       signInEmail: '',
-      signInPassword: ''
+      signInPassword: '',
+      err: null
     }
   }
 
   onEmailChange = (event) => {
-    this.setState({signInEmail: event.target.value})
+    this.setState({ signInEmail: event.target.value })
   }
 
   onPasswordChange = (event) => {
-    this.setState({signInPassword: event.target.value})
+    this.setState({ signInPassword: event.target.value })
   }
 
   onSubmitSignIn = () => {
-    fetch(`${process.env.REACT_APP_BACKEND || "http://localhost:3000"}/signin`, {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        email: this.state.signInEmail,
-        password: this.state.signInPassword
+    trackPromise(
+      fetch(`${process.env.REACT_APP_BACKEND || "http://localhost:3000"}/signin`, {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: this.state.signInEmail,
+          password: this.state.signInPassword
+        })
       })
-    })
-      .then(response => response.json())
-      .then(user => {
-        if (user.id) {
-          this.props.loadUser(user)
-          this.props.onRouteChange('home');
-        }
-      })
+        .then(response => response.json())
+        .then(user => {
+          if (user.id) {
+            this.props.loadUser(user)
+            this.props.onRouteChange('home');
+          } else {
+            this.setState({ err: user });
+          }
+        }));
   }
 
   render() {
@@ -43,6 +49,9 @@ class Signin extends React.Component {
           <div className="measure">
             <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
               <legend className="f1 fw6 ph0 mh0">Sign In</legend>
+              {this.state.err ? <div className='red'>
+                {this.state.err}
+              </div> : null}
               <div className="mt3">
                 <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
                 <input
@@ -73,8 +82,9 @@ class Signin extends React.Component {
               />
             </div>
             <div className="lh-copy mt3">
-              <p  onClick={() => onRouteChange('register')} className="f6 link dim black db pointer">Register</p>
+              <p onClick={() => onRouteChange('register')} className="f6 link dim black db pointer">Register</p>
             </div>
+            <LoadingIndicator />
           </div>
         </main>
       </article>

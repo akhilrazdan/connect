@@ -1,4 +1,6 @@
 import React from 'react';
+import LoadingIndicator from '../LoadingIndicator/LoadingIndicator';
+import { trackPromise } from 'react-promise-tracker';
 
 class Register extends React.Component {
   constructor(props) {
@@ -6,39 +8,44 @@ class Register extends React.Component {
     this.state = {
       email: '',
       password: '',
-      name: ''
+      name: '',
+      err: null
     }
   }
 
   onNameChange = (event) => {
-    this.setState({name: event.target.value})
+    this.setState({ name: event.target.value })
   }
 
   onEmailChange = (event) => {
-    this.setState({email: event.target.value})
+    this.setState({ email: event.target.value })
   }
 
   onPasswordChange = (event) => {
-    this.setState({password: event.target.value})
+    this.setState({ password: event.target.value })
   }
 
   onSubmitSignIn = () => {
-    fetch(`${process.env.REACT_APP_BACKEND || "http://localhost:3000"}/register`, {
-      method: 'post',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        email: this.state.email,
-        password: this.state.password,
-        name: this.state.name
+    trackPromise(
+      fetch(`${process.env.REACT_APP_BACKEND || "http://localhost:3000"}/register`, {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: this.state.email,
+          password: this.state.password,
+          name: this.state.name
+        })
       })
-    })
-      .then(response => response.json())
-      .then(user => {
-        if (user.id) {
-          this.props.loadUser(user)
-          this.props.onRouteChange('home');
-        }
-      })
+        .then(response => response.json())
+        .then(user => {
+          if (user.id) {
+            this.props.loadUser(user)
+            this.props.onRouteChange('home');
+          } else {
+            this.setState({ err: user })
+          }
+        })
+    );
   }
 
   render() {
@@ -48,6 +55,9 @@ class Register extends React.Component {
           <div className="measure">
             <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
               <legend className="f1 fw6 ph0 mh0">Register</legend>
+              {this.state.err ? <div className='red'>
+                {this.state.err}
+              </div> : null}
               <div className="mt3">
                 <label className="db fw6 lh-copy f6" htmlFor="name">Name</label>
                 <input
@@ -87,6 +97,7 @@ class Register extends React.Component {
                 value="Register"
               />
             </div>
+            <LoadingIndicator />
           </div>
         </main>
       </article>
