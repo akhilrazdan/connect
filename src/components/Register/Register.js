@@ -23,7 +23,7 @@ class Register extends React.Component {
   }
 
   onSubmitSignIn = () => {
-    fetch(`http://${process.env.BACKEND}:3000/register`, {
+    fetch(`http://${process.env.BACKEND || "localhost"}:3000/register`, {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
