@@ -81,6 +81,7 @@ class CardList extends React.Component {
                 id={mentor.id}
                 name={mentor.name}
                 email={mentor.email}
+                area={mentor.area}
                 availableSlots={mentor.available_slots}
                 isRegistered={mentor.registered === 'true'}
                 onMentorSignup={this.onMentorSignup}
