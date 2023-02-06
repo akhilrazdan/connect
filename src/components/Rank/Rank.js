@@ -8,7 +8,7 @@ const Rank = ({ name, signupsTotal, choicesRemaining }) => {
         {`Welcome ${name}`} </div>
       <p></p>
       <div className='pa2 mh2 black f5'>
-        Please find below your form to fill your mentor selections. Please note that you are able to pick a minimum of 1 and a maximum of 6 mentors. This selection process is on a first come, first serve basis.
+        Please make your mentor selections below. Please note that you are able to pick a minimum of 1 and a maximum of 6 mentors. This selection process is on a first come, first serve basis.
         <p>
         NOTE: Each mentor has a maximum capacity of 6 mentees. If you cannot find your mentor's name on the list, chances are that their roster has been filled. If you are interested in reaching out, send us an email at mentorship@batonnageforum.com and we will see what we can do to best accommodate.
         </p>
