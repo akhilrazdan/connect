@@ -13,7 +13,7 @@ class CardList extends React.Component {
   }
   updateMentors = () => {
     console.log("API: gettingMentors")
-    fetch(`http://${process.env.BACKEND || "localhost"}:3000/mentors/${this.props.menteeId}`)
+    fetch(`http://${process.env.REACT_APP_BACKEND || "localhost"}:3000/mentors/${this.props.menteeId}`)
       .then(response => response.json())
       .then(response => {
         console.log(response);
@@ -23,7 +23,7 @@ class CardList extends React.Component {
   }
   onMentorSignup = (mentor) => {
     console.log(`API: Signing up mentor : ${mentor.id} to mentee (${this.props.menteeId}) `);
-    fetch('http://${process.env.BACKEND}:3000/mentorSignup', {
+    fetch('http://${process.env.REACT_APP_BACKEND}:3000/mentorSignup', {
       method: 'post',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -51,7 +51,7 @@ class CardList extends React.Component {
   componentDidMount() {
     // TODO should only load when signed in
     // Remaining choices is not correct in debugging mode
-    fetch(`http://${process.env.BACKEND || "localhost"}:3000/mentors/${this.props.menteeId}`)
+    fetch(`http://${process.env.REACT_APP_BACKEND || "localhost"}:3000/mentors/${this.props.menteeId}`)
       .then(response => response.json())
       .then(response => {
         if (response.mentors) {
