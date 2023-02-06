@@ -4,7 +4,7 @@ import './Card.css'
 const Card = ({ name, email, area, id, availableSlots, onMentorSignup, isRegistered }) => {
   if (isRegistered) {
     return (
-      <div className='tc grow bg-light-green br3 pa3 ma2 dib bw2 shadow-5'>
+      <div className='tc grow bg-washed-green br3 pa3 ma2 dib bw2 shadow-5'>
         <div className='container'>
           <h2>{name}</h2>
           <p>{area}</p>
@@ -16,7 +16,7 @@ const Card = ({ name, email, area, id, availableSlots, onMentorSignup, isRegiste
   }
   if (availableSlots > 0) {
     return (
-      <div className='tc grow bg-light-green br3 pa3 ma2 dib bw2 shadow-5'>
+      <div className='tc grow bg-washed-green br3 pa3 ma2 dib bw2 shadow-5'>
 
         <div>
           <h2>{name}</h2>
@@ -29,8 +29,6 @@ const Card = ({ name, email, area, id, availableSlots, onMentorSignup, isRegiste
   } else {
     return (
       <div className='tc grow bg-light-gray br3 pa3 ma2 dib bw2 shadow-5 dim'>
-        
-
         <div className='container'>
           <h2>{name}</h2>
           <p>{area}</p>
