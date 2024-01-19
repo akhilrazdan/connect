@@ -10,6 +10,7 @@ import {
 
 } from 'firebase/auth'
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
+import { checkIfMenteeExists, createMentee } from './connect-api.utils';
 
 const firebaseConfig = {
     apiKey: "AIzaSyCylBNsuLOkI0Kr1wYWBWmuU4x8YXAuVvA",  // Okay to have this exposed
@@ -75,4 +76,34 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
     }
 
     return userDocRef;
+};
+
+export const createUserUsingBackendApi = async (userAuth, additionalInformation = {}) => {
+
+    try {
+        // Check if user already exists
+        const exists = await checkIfMenteeExists({ uid: userAuth.uid })
+
+        if (exists) {
+            console.log('User already exists. No need to create a new one.');
+            return; // Exit the function early if the user already exists
+        }
+        const displayName = additionalInformation.displayName || userAuth.displayName;
+        const email = userAuth.email;
+        const uid = userAuth.uid;
+        // If user does not exist, proceed with creating the user
+        const newMentee = await createMentee({ uid: userAuth.uid, name: displayName, email })
+        console.log('newMentee:', newMentee);
+        if (newMentee.id) {
+            // Handle successful user creation
+            return newMentee;
+        } else {
+            // Handle errors or unsuccessful user creation
+
+            throw new Error(newMentee);
+        }
+    } catch (error) {
+        console.error('Error in creating the mentee using backend API:', error.message);
+        throw error; // rethrow the error if you want to handle it outside this function
+    }
 };
