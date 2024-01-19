@@ -4,6 +4,7 @@ import Authentication from "./components/authentication/authentication.component
 import Home from "./components/home/home.component";
 import { useContext } from "react";
 import { UserContext } from "./contexts/user.context";
+import MentorList from "./components/MentorList/mentor-list.component";
 
 
 const App = () => {
@@ -14,7 +15,7 @@ const App = () => {
       <Routes>
         <Route path='/auth' element={<Authentication />} />
         <Route path='/' element={currentUser ? <Navigation /> : <Navigate to="/auth" />}>
-          <Route index element={<Home />} />
+          <Route index element={<MentorList />} />
         </Route>
       </Routes>
     </div>

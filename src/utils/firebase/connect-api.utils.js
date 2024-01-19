@@ -30,6 +30,27 @@ export const createMentee = async ({ uid, name, email }) => {
         return { error: true, message: error.message };
     }
 };
+export const getMentee = async ({ uid }) => {
+    try {
+        const response = await fetch(`http://localhost:3000/user/${uid}`);
+        console.log(`Calling checkIfMenteeExists ${uid} ${response.ok}`);
+        if (response.ok) {
+            // The request was successful, and the user exists
+            return response;
+        } else if (response.status === 400) {
+            // The request was unsuccessful, and the user does not exist
+            return response;
+        } else {
+            // Handle other potential status codes (e.g., server errors)
+            console.error('Received unexpected status code:', response.status);
+            return response;
+        }
+    } catch (error) {
+        // Handle network or other unexpected errors
+        console.error('An error occurred while checking if user exists:', error);
+        throw error;
+    }
+};
 
 export const checkIfMenteeExists = async ({ uid }) => {
     try {
