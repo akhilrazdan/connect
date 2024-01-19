@@ -1,14 +1,23 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Navigation from "./routes/navigation/navigation.component";
 import Authentication from "./components/authentication/authentication.component";
+import Home from "./components/home/home.component";
+import { useContext } from "react";
+import { UserContext } from "./contexts/user.context";
+
 
 const App = () => {
+  const { currentUser } = useContext(UserContext)
+
   return (
-    <Routes>
-      <Route path='/' element={<Navigation />} >
+    <div>
+      <Routes>
         <Route path='/auth' element={<Authentication />} />
-      </Route>
-    </Routes>
+        <Route path='/' element={currentUser ? <Navigation /> : <Navigate to="/auth" />}>
+          <Route index element={<Home />} />
+        </Route>
+      </Routes>
+    </div>
   );
 };
 
