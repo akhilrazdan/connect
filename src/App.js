@@ -13,10 +13,11 @@ const App = () => {
   return (
     <div>
       <Routes>
-        <Route path='/auth' element={<Authentication />} />
         <Route path='/' element={currentUser ? <Navigation /> : <Navigate to="/auth" />}>
           <Route index element={<MentorList />} />
         </Route>
+        <Route path='/auth' element={<Authentication />} />
+
       </Routes>
     </div>
   );

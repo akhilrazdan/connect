@@ -8,7 +8,7 @@ export const createMentee = async ({ uid, name, email }) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                id: uid,
+                uid,
                 name,
                 email
             })
@@ -17,7 +17,7 @@ export const createMentee = async ({ uid, name, email }) => {
         if (response.ok) {
             // The request was successful, and the user was created
             const createdUser = await response.json();
-            return createdUser;
+            return { error: false, user: createdUser };
         } else {
             // The request was unsuccessful, log the status and return an error object
             console.error('Failed to create user. Status:', response.status);
@@ -33,17 +33,20 @@ export const createMentee = async ({ uid, name, email }) => {
 export const getMentee = async ({ uid }) => {
     try {
         const response = await fetch(`http://localhost:3000/user/${uid}`);
-        console.log(`Calling checkIfMenteeExists ${uid} ${response.ok}`);
+        console.log(`Calling getMentee ${uid} ${response.ok}`);
         if (response.ok) {
             // The request was successful, and the user exists
             return response;
-        } else if (response.status === 400) {
+        } else if (response.status === 404) {
             // The request was unsuccessful, and the user does not exist
-            return response;
+
+            const errorData = await response.json();
+            console.error(`AKhilz response ${JSON.stringify(errorData)}`)
+            return null;
         } else {
             // Handle other potential status codes (e.g., server errors)
             console.error('Received unexpected status code:', response.status);
-            return response;
+            return null;
         }
     } catch (error) {
         // Handle network or other unexpected errors
@@ -59,7 +62,7 @@ export const checkIfMenteeExists = async ({ uid }) => {
         if (response.ok) {
             // The request was successful, and the user exists
             return true;
-        } else if (response.status === 400) {
+        } else if (response.status === 404) {
             // The request was unsuccessful, and the user does not exist
             return false;
         } else {

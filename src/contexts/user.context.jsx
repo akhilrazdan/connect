@@ -4,8 +4,7 @@ import {
     useEffect
 }
     from 'react'
-import { onAuthStateChangedListener, createUserUsingBackendApi } from '../utils/firebase/firebase.utils';
-import { checkIfMenteeExists } from '../utils/firebase/connect-api.utils';
+import { onAuthStateChangedListener } from '../utils/firebase/firebase.utils';
 // as the actual value you want to access
 export const UserContext = createContext({
     currentUser: null,
@@ -15,7 +14,6 @@ export const UserContext = createContext({
 export const UserProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const value = { currentUser, setCurrentUser };
-
     useEffect(() => {
         const unsubscribe = onAuthStateChangedListener((user) => {
             setCurrentUser(user);

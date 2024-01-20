@@ -92,18 +92,17 @@ export const createUserUsingBackendApi = async (userAuth, additionalInformation 
         const email = userAuth.email;
         const uid = userAuth.uid;
         // If user does not exist, proceed with creating the user
-        const newMentee = await createMentee({ uid: userAuth.uid, name: displayName, email })
-        console.log('newMentee:', newMentee);
-        if (newMentee.id) {
+        const response = await createMentee({ uid: userAuth.uid, name: displayName, email })
+        console.log('newMentee:', JSON.stringify(response));
+        if (!response.error) {
             // Handle successful user creation
-            return newMentee;
+            return response.user;
         } else {
             // Handle errors or unsuccessful user creation
-
-            throw new Error(newMentee);
+            throw new Error(response.data);
         }
     } catch (error) {
-        console.error('Error in creating the mentee using backend API:', error.message);
+        console.error('Error in creating the mentee using backend API:', error)
         throw error; // rethrow the error if you want to handle it outside this function
     }
 };

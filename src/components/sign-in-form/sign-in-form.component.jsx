@@ -7,7 +7,6 @@ import {
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 import { createUserUsingBackendApi } from "../../utils/firebase/firebase.utils";
-
 import './sign-in-form.styles.scss';
 
 const defaultFormFields = {
@@ -25,7 +24,15 @@ const SignInForm = () => {
 
     const signInWithGoogle = async () => {
         const { user } = await signInWithGooglePopup();
-        await createUserUsingBackendApi(user);
+        try {
+            const response = await createUserUsingBackendApi(user);
+        } catch (error) {
+            if (error.code === 'auth/email-already-in-use') {
+                alert("Cannot create user, email already in use");
+            } else {
+                console.error("User creation encountered an error", error);
+            }
+        }
     }
 
 
