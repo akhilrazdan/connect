@@ -36,7 +36,9 @@ export const getMentee = async ({ uid }) => {
         console.log(`Calling getMentee ${uid} ${response.ok}`);
         if (response.ok) {
             // The request was successful, and the user exists
-            return response;
+            const userMetadata = await response.json()
+            console.log(`response userMetadata ${JSON.stringify(userMetadata)}`)
+            return userMetadata;
         } else if (response.status === 404) {
             // The request was unsuccessful, and the user does not exist
 
@@ -77,24 +79,28 @@ export const checkIfMenteeExists = async ({ uid }) => {
     }
 };
 
+export const getMentorsForMentee = async ({ uid }) => {
+    try {
+        const response = await fetch(`http://localhost:3000/mentors?menteeId=${uid}`);
+        console.log(`Getting mentors for mentee real ${uid} ${response.ok}`);
+        if (response.ok) {
+            // The request was successful, and the user exists
+            const mentors = await response.json()
+            return mentors;
+        } else if (response.status === 404) {
+            // The request was unsuccessful, and the user does not exist
 
-// const createUserResponse = await fetch(`${process.env.REACT_APP_BACKEND || "http://localhost:3000"}/register`, {
-//             method: 'post',
-//             headers: { 'Content-Type': 'application/json' },
-//             body: JSON.stringify({
-//                 email,
-//                 displayName,
-//                 createdAt,
-//                 ...additionalInformation
-//             })
-//         });
-
-//         const newUser = await createUserResponse.json();
-
-//         if (newUser.id) {
-//             // Handle successful user creation
-//             return newUser;
-//         } else {
-//             // Handle errors or unsuccessful user creation
-//             throw new Error(newUser);
-//         }
+            const errorData = await response.json();
+            console.error(`AKhilz response ${JSON.stringify(errorData)}`)
+            return null;
+        } else {
+            // Handle other potential status codes (e.g., server errors)
+            console.error('Received unexpected status code:', response.status);
+            return null;
+        }
+    } catch (error) {
+        // Handle network or other unexpected errors
+        console.error('An error occurred while checking if user exists:', error);
+        throw error;
+    }
+};

@@ -2,9 +2,9 @@ import Button from '../button/button.component';
 import './mentor-card.styles.scss'
 
 const MentorCard = ({ mentor }) => {
-    const { name, price, imageUrl } = mentor;
+    const { name, price, image_url } = mentor;
     return (< div className='mentor-card-container' >
-        <img src={imageUrl} alt='mentor' />
+        <img src={image_url} alt='mentor' />
         <div className='footer'>
             <span className='name'>{name}</span>
             <span className='price'>{price}</span>
