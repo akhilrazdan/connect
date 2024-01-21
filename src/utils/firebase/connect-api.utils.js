@@ -104,3 +104,28 @@ export const getMentorsForMentee = async ({ uid }) => {
         throw error;
     }
 };
+
+export const signupMenteeForMentor = async ({ menteeUid, mentorId }) => {
+    const url = 'http://localhost:3000/signup-mentee-for-mentor'; // Adjust the URL to your backend endpoint
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ menteeUid, mentorId }),
+        });
+
+        if (!response.ok) {
+            const message = `An error occurred: ${response.statusText}`;
+            throw new Error(message);
+        }
+
+        const result = await response.json();
+        return result; // This could be the confirmation message or details about the signup
+    } catch (error) {
+        console.error('Error during mentee signup for mentor:', error);
+        throw error; // Rethrow the error so you can handle it in the component
+    }
+};
