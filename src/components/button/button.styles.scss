@@ -43,18 +43,4 @@
       border: none;
     }
   }
-
-  &.mentor-sign-up {
-    width: 80%;
-    opacity: 0.7;
-    position: absolute !important;
-    top: 255px;
-    display: none !important;
-
-    @media screen and (max-width: 800px) {
-      display: block !important;
-      opacity: 0.9;
-      min-width: unset !important;
-    }
-  }
 }

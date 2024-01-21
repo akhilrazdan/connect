@@ -18,7 +18,7 @@ export const UserMetadataProvider = ({ children }) => {
                 try {
                     console.log(`currentUser ${JSON.stringify(currentUser)}`)
                     const response = await getMentee({ uid: currentUser.uid });
-                    console.log(`response ${JSON.stringify(response)}`)
+                    console.log(`userMetadata ${JSON.stringify(response)}`)
                     setUserMetadata(response)
                 } catch (error) {
                     console.error('Error fetching user details:', error);

@@ -6,20 +6,21 @@ import { MentorsContext } from '../../contexts/mentors.context'
 import './mentor-card.styles.scss'
 
 const MentorCard = ({ mentor }) => {
-    const { mentorId, name, max_mentor_capacity, current_mentee_count, image_url } = mentor;
+    const { mentor_id, name, max_mentor_capacity, current_mentee_count, is_registered, image_url } = mentor;
     const [signupStatus, setSignupStatus] = useState('idle'); // 'idle', 'pending', 'success', 'error'
     const [errorMessage, setErrorMessage] = useState('');
     const { refreshMentors } = useContext(MentorsContext);
 
     const { userMetadata } = useContext(UserMetadataContext);
     const menteeUid = userMetadata.uid;
+    console.log(`userMetadata in MentorCard ${JSON.stringify(userMetadata)}, ${menteeUid}`)
 
-    const onMentorSignup = async () => {
-
+    const onMentorSignup = async ({ menteeUid, mentorId }) => {
+        console.log(`menteeUid ${menteeUid} mentorId ${mentorId}`)
         setSignupStatus('pending');
 
         try {
-            await signupMenteeForMentor(menteeUid, mentorId);
+            const result = await signupMenteeForMentor({ menteeId: menteeUid, mentorId }); // TODO-akhilz Correct this disaster
             console.log(result); // Handle result if needed
             setSignupStatus('success');
 
@@ -34,12 +35,31 @@ const MentorCard = ({ mentor }) => {
     console.log(`max_mentor_capacity ${max_mentor_capacity} current_mentee_count ${current_mentee_count}`)
 
     return (< div className='mentor-card-container' >
-        <img src={image_url} alt='mentor' />
+        <div className='image-container'>
+            <img src={image_url} alt='mentor' />
+            {is_registered && <div className='registered-overlay'>Registered</div>}
+            {!is_registered && signupStatus === 'idle' && (
+                <Button
+                    buttonType='inverted'
+                    onClick={() => onMentorSignup({ menteeUid, mentorId: mentor_id })}
+                    className='signup-button'
+                >
+                    Sign Up
+                </Button>
+            )}
+        </div>
+
         <div className='footer'>
             <span className='name'>{name}</span>
             {/* <Button buttonType='inverted' onClick={onMentorSignup}>Sign Up</Button> */}
             <span className='slots'>{max_mentor_capacity - current_mentee_count} left!</span>
-            {signupStatus === 'idle' && <Button buttonType='inverted' onClick={onMentorSignup}>Sign Up</Button>}
+            {/* {signupStatus === 'idle' && <Button buttonType='inverted' onClick={() => onMentorSignup({ menteeUid, mentorId: mentor_id })}>Sign Up</Button>} */}
+            {/* {is_registered && <div className='registered-overlay'>Registered</div>} */}
+            {/* {!is_registered && signupStatus === 'idle' && (
+                <Button buttonType='inverted' onClick={() => onMentorSignup({ menteeUid, mentorId: mentor_id })}>
+                    Sign Up
+                </Button>
+            )} */}
             {signupStatus === 'pending' && <p>Signing up...</p>}
             {signupStatus === 'success' && <p>Signed up successfully!</p>}
             {signupStatus === 'error' && <p>Error: {errorMessage}</p>}

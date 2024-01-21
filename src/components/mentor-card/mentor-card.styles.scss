@@ -2,29 +2,51 @@
     width: 95%;
     display: flex;
     flex-direction: column;
-    height: 350px;
     justify-content: space-between; // Space between items, pushing the button to the bottom
     position: relative;
+    height: 300px;
 
-    img {
-        width: 100%;
-        height: 90%;
-        object-fit: cover;
-        background-position: center center;
-        margin-bottom: 5px;
-        border: 1px solid;
+    .image-container {
+        position: relative;
+        flex: 8;
+
+        img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            background-position: center center;
+            border: 1px solid;
+            display: block; // This removes the extra space below the image
+        }
+
+        .signup-button {
+            position: absolute;
+            bottom: 50px;
+            /* Adjust this value to move the button slightly above the bottom edge of the image */
+            left: 50%;
+            transform: translateX(-50%);
+            /* ... other styles ... */
+            // opacity: 0.7;
+            // display: flex;
+            // justify-content: center;
+            // align-items: center;
+        }
     }
 
-    button {
-        width: 80%;
-        opacity: 0.7;
-        position: absolute; // Position the button absolutely within the mentor-card-container
-        bottom: 50px; // Distance from the bottom of the mentor-card-container
-        left: 50%; // Horizontally center the button
-        transform: translateX(-50%); // Adjust for the width of the button to ensure true centering
+    .image-container .registered-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        /* Semi-transparent overlay */
+        color: white;
         display: flex;
-        justify-content: center; // Center the content of the button horizontally
-        align-items: center; // Center the content of the button vertically
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        /* Adjust as needed */
     }
 
     &:hover {
@@ -39,19 +61,18 @@
     }
 
     .footer {
-        width: 100%;
-        height: 5%;
+        flex: 2;
         display: flex;
         justify-content: space-between;
         font-size: 18px;
 
         .name {
-            width: 90%;
+            width: 80%;
             margin-bottom: 15px;
         }
 
-        .price {
-            width: 10%;
+        .slots {
+            width: 20%;
             text-align: right;
         }
     }

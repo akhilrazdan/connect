@@ -105,16 +105,16 @@ export const getMentorsForMentee = async ({ uid }) => {
     }
 };
 
-export const signupMenteeForMentor = async ({ menteeUid, mentorId }) => {
-    const url = 'http://localhost:3000/signup-mentee-for-mentor'; // Adjust the URL to your backend endpoint
-
+export const signupMenteeForMentor = async ({ menteeId, mentorId }) => {
+    const url = 'http://localhost:3000/signup'; // Adjust the URL to your backend endpoint
+    console.log(`Calling signupMenteeForMentor ${menteeId} ${mentorId}`);
     try {
         const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ menteeUid, mentorId }),
+            body: JSON.stringify({ menteeId, mentorId }),
         });
 
         if (!response.ok) {

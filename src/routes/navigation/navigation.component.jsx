@@ -20,6 +20,7 @@ const Navigation = () => {
                     <CrwnLogo className="logo" />
                 </Link>
                 <div className="nav-links-container">
+                    {currentUser ? currentUser.email : ""}
                     <Link className="nav-link" to='/my-learning'>
                         MY REQUESTS
                     </Link>

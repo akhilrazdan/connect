@@ -12,7 +12,7 @@ const MentorList = () => {
         <div className="mentors-container">
             {userMetadata ? (
                 mentors.map((mentor) =>
-                    <MentorCard key={mentor.id} mentor={mentor} />)) :
+                    <MentorCard key={mentor.mentor_id} mentor={mentor} />)) :
                 <div>
                     You're not registered with batonnage. Are you sure you are signing with the right email address?
                     Contact Priyanka French.
