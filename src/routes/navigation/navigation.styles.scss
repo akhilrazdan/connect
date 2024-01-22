@@ -9,7 +9,18 @@
   .logo-container {
     height: 100%;
     width: 70px;
-    padding: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-image {
+    width: 100%;
+    /* Make the image fill the container */
+    height: 100%;
+    /* Make the image fill the container */
+    object-fit: contain;
+    /* Preserve aspect ratio without cropping */
   }
 
   .nav-links-container {

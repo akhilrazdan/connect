@@ -2,7 +2,7 @@ import { Outlet, Link } from "react-router-dom";
 import { Fragment, useContext } from "react";
 import { UserContext } from "../../contexts/user.context";
 import { signOutUser } from "../../utils/firebase/firebase.utils";
-import { ReactComponent as CrwnLogo } from '../../assets/crown.svg';
+import CrwnLogo from '../../assets/BatonnageLogo_Orange_Mentorship.png';
 
 import './navigation.styles.scss';
 
@@ -17,7 +17,7 @@ const Navigation = () => {
         <Fragment>
             <div className="navigation">
                 <Link className="logo-container" to='/'>
-                    <CrwnLogo className="logo" />
+                    <img src={CrwnLogo} alt="Logo" className="logo-image" />
                 </Link>
                 <div className="nav-links-container">
                     {currentUser ? currentUser.email : ""}
