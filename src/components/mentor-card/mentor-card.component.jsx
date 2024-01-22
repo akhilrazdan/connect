@@ -10,6 +10,12 @@ const MentorCard = ({ mentor }) => {
     const [signupStatus, setSignupStatus] = useState('idle'); // 'idle', 'pending', 'success', 'error'
     const [errorMessage, setErrorMessage] = useState('');
     const { refreshMentors } = useContext(MentorsContext);
+    const [isBioVisible, setBioVisible] = useState(false);
+
+    const handleBioLinkClick = (event) => {
+        event.preventDefault(); // Prevent the default anchor link behavior
+        setBioVisible(!isBioVisible); // Toggle the visibility of the bio
+    };
 
     const { userMetadata } = useContext(UserMetadataContext);
     const menteeUid = userMetadata.uid;
@@ -33,13 +39,16 @@ const MentorCard = ({ mentor }) => {
         }
     }
     console.log(`max_mentor_capacity ${max_mentor_capacity} current_mentee_count ${current_mentee_count}`)
+    const is_available = max_mentor_capacity - current_mentee_count > 0;
 
     return (
         < div className='mentor-card-container' >
             <div className='image-container'>
                 <img src={image_url} alt='mentor' />
                 {is_registered && <div className='registered-overlay'>Registered</div>}
-                {!is_registered && signupStatus === 'idle' && (
+                {!is_registered && !is_available && <div className='registered-overlay'>Class full</div>}
+                {signupStatus === 'pending' && <div className='registered-overlay'>Signing up...</div>}
+                {!is_registered && is_available && signupStatus === 'idle' && (
                     <Button
                         buttonType='inverted'
                         onClick={() => onMentorSignup({ menteeUid, mentorId: mentor_id })}
@@ -48,22 +57,28 @@ const MentorCard = ({ mentor }) => {
                         Sign Up
                     </Button>
                 )}
+
+                {isBioVisible && (
+                    <div className='bio-modal'>
+                        <div className='bio-content'>
+                            <h2>{name}'s Bio</h2>
+                            <p>Their bio</p>
+                            <button onClick={() => setBioVisible(false)}>Close</button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div className='footer'>
-                <span className='name'>{name}</span>
-                {/* <Button buttonType='inverted' onClick={onMentorSignup}>Sign Up</Button> */}
-                <span className='slots'>{max_mentor_capacity - current_mentee_count} left!</span>
-                {/* {signupStatus === 'idle' && <Button buttonType='inverted' onClick={() => onMentorSignup({ menteeUid, mentorId: mentor_id })}>Sign Up</Button>} */}
-                {/* {is_registered && <div className='registered-overlay'>Registered</div>} */}
-                {/* {!is_registered && signupStatus === 'idle' && (
-                <Button buttonType='inverted' onClick={() => onMentorSignup({ menteeUid, mentorId: mentor_id })}>
-                    Sign Up
-                </Button>
-            )} */}
-                {signupStatus === 'pending' && <p>Signing up...</p>}
-                {signupStatus === 'success' && <p>Signed up successfully!</p>}
-                {signupStatus === 'error' && <p>Error: {errorMessage}</p>}
+                <div className='row'>
+                    <div className='name'><a href='#' onClick={handleBioLinkClick}>{name}</a></div>
+
+                    {!is_registered && is_available && <div className='slots'>{max_mentor_capacity - current_mentee_count} left!</div>}
+                    {/* {signupStatus === 'success' && <p>Signed up successfully!</p>} */}
+                </div>
+                <div className='full-width'>
+                    {signupStatus === 'error' && <p>Error: {errorMessage}</p>}
+                </div>
             </div>
         </div >
     )
