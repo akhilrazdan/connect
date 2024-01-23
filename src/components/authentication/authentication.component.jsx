@@ -13,7 +13,7 @@ const Authentication = () => {
         if (currentUser) {
             navigate('/')
         }
-        return () => { } //eslint-disable-next-line react-hooks/exhaustive-deps 
+        return () => { }
     }, [currentUser, navigate]);
 
     return (<div className="authentication-container">
