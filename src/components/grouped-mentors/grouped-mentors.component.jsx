@@ -4,7 +4,7 @@ import { MentorsContext } from '../../contexts/mentors.context';
 import MentorList from '../MentorList/mentor-list.component';
 
 const GroupedMentors = () => {
-  const { mentorsMap } = useContext(MentorsContext);
+  const { mentorsGroupedByIaf: mentorsMap } = useContext(MentorsContext);
 
   return (
     <Fragment>

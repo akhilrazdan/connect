@@ -20,9 +20,12 @@ const Navigation = () => {
                     <img src={CrwnLogo} alt="Logo" className="logo-image" />
                 </Link>
                 <div className="nav-links-container">
-                    {currentUser ? currentUser.email : ""}
+                    Hi {currentUser ? currentUser.email : ""}
+                    <Link className="nav-link" to='/faq'>
+                        FAQ
+                    </Link>
                     <Link className="nav-link" to='/my-learning'>
-                        MY REQUESTS
+                        MY LEARNING
                     </Link>
                     {currentUser ? (
                         <span className="nav-link" onClick={signOutHandler}>SIGN OUT</span>

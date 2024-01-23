@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { MentorsContext } from '../../contexts/mentors.context';
 import MentorCard from '../mentor-card/mentor-card.component';
 import { UserMetadataContext } from '../../contexts/user-metadata.context';
 

@@ -9,7 +9,7 @@ const MentorCard = ({ mentor }) => {
     const { mentor_id, name, max_mentor_capacity, current_mentee_count, is_registered, image_url } = mentor;
     const [signupStatus, setSignupStatus] = useState('idle'); // 'idle', 'pending', 'success', 'error'
     const [errorMessage, setErrorMessage] = useState('');
-    const { refreshMentors } = useContext(MentorsContext);
+    const { refreshMentors, choicesRemaining } = useContext(MentorsContext);
     const [isBioVisible, setBioVisible] = useState(false);
 
     const handleBioLinkClick = (event) => {
@@ -42,13 +42,13 @@ const MentorCard = ({ mentor }) => {
     const is_available = max_mentor_capacity - current_mentee_count > 0;
 
     return (
-        < div className='mentor-card-container' >
+        <div className='mentor-card-container' >
             <div className='image-container'>
                 <img src={image_url} alt='mentor' />
                 {is_registered && <div className='registered-overlay'>Registered</div>}
                 {!is_registered && !is_available && <div className='registered-overlay'>Class full</div>}
                 {signupStatus === 'pending' && <div className='registered-overlay'>Signing up...</div>}
-                {!is_registered && is_available && signupStatus === 'idle' && (
+                {!is_registered && is_available && signupStatus === 'idle' && choicesRemaining > 0 && (
                     <Button
                         buttonType='inverted'
                         onClick={() => onMentorSignup({ menteeUid, mentorId: mentor_id })}
@@ -73,7 +73,7 @@ const MentorCard = ({ mentor }) => {
                 <div className='row'>
                     <div className='name'><a href='#' onClick={handleBioLinkClick}>{name}</a></div>
 
-                    {!is_registered && is_available && <div className='slots'>{max_mentor_capacity - current_mentee_count} left!</div>}
+                    {!is_registered && is_available && (current_mentee_count > 0) && <div className='slots'>{max_mentor_capacity - current_mentee_count} left!</div>}
                     {/* {signupStatus === 'success' && <p>Signed up successfully!</p>} */}
                 </div>
                 <div className='full-width'>
