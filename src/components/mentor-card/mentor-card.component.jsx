@@ -3,19 +3,31 @@ import { signupMenteeForMentor } from '../../utils/firebase/connect-api.utils';
 import { useState, useContext } from 'react';
 import { UserMetadataContext } from '../../contexts/user-metadata.context';
 import { MentorsContext } from '../../contexts/mentors.context'
+import Modal from '../modal/modal.component';
 import './mentor-card.styles.scss'
 
 const MentorCard = ({ mentor }) => {
-    const { mentor_id, name, max_mentor_capacity, current_mentee_count, is_registered, image_url } = mentor;
+    const { mentor_id, name, max_mentor_capacity, current_mentee_count, is_registered, image_url, description } = mentor;
     const [signupStatus, setSignupStatus] = useState('idle'); // 'idle', 'pending', 'success', 'error'
     const [errorMessage, setErrorMessage] = useState('');
     const { refreshMentors, choicesRemaining } = useContext(MentorsContext);
     const [isBioVisible, setBioVisible] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedMentor, setSelectedMentor] = useState({});
 
     const handleBioLinkClick = (event) => {
         event.preventDefault(); // Prevent the default anchor link behavior
         setBioVisible(!isBioVisible); // Toggle the visibility of the bio
     };
+
+    const openModal = (mentor) => {
+        setSelectedMentor(mentor);
+        setShowModal(true);
+    };
+    const closeModal = () => {
+        setShowModal(false);
+    };
+
 
     const { userMetadata } = useContext(UserMetadataContext);
     const menteeUid = userMetadata.uid;
@@ -44,7 +56,7 @@ const MentorCard = ({ mentor }) => {
     return (
         <div className='mentor-card-container' >
             <div className='image-container'>
-                <img src={image_url} alt='mentor' />
+                <img src={image_url} alt='mentor' onClick={() => openModal(mentor)} />
                 {is_registered && <div className='registered-overlay'>Registered</div>}
                 {!is_registered && !is_available && <div className='registered-overlay'>Class full</div>}
                 {signupStatus === 'pending' && <div className='registered-overlay'>Signing up...</div>}
@@ -80,6 +92,9 @@ const MentorCard = ({ mentor }) => {
                     {signupStatus === 'error' && <p>Error: {errorMessage}</p>}
                 </div>
             </div>
+            <Modal show={showModal} onClose={closeModal} name={selectedMentor.name} bio={selectedMentor.description}>
+                <img src={image_url} alt={name} />
+            </Modal>
         </div >
     )
 }
