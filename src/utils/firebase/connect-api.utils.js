@@ -1,8 +1,9 @@
+const BACKEND_URL = process.env.REACT_APP_CONNECT_API_ENDPOINT;
 
 export const createMentee = async ({ uid, name, email }) => {
     try {
         console.log(`Calling createMentee ${uid} ${name} ${email}`);
-        const response = await fetch(`http://localhost:3000/user`, {
+        const response = await fetch(`${BACKEND_URL}/user`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -31,8 +32,9 @@ export const createMentee = async ({ uid, name, email }) => {
     }
 };
 export const getMentee = async ({ uid }) => {
+    console.log(`Backend : ${BACKEND_URL}`)
     try {
-        const response = await fetch(`http://localhost:3000/user/${uid}`);
+        const response = await fetch(`${BACKEND_URL}/user/${uid}`);
         console.log(`Calling getMentee ${uid} ${response.ok}`);
         if (response.ok) {
             // The request was successful, and the user exists
@@ -59,7 +61,7 @@ export const getMentee = async ({ uid }) => {
 
 export const checkIfMenteeExists = async ({ uid }) => {
     try {
-        const response = await fetch(`http://localhost:3000/user/${uid}`);
+        const response = await fetch(`${BACKEND_URL}/user/${uid}`);
         console.log(`Calling checkIfMenteeExists ${uid} ${response.ok}`);
         if (response.ok) {
             // The request was successful, and the user exists
@@ -81,7 +83,7 @@ export const checkIfMenteeExists = async ({ uid }) => {
 
 export const getMentorsForMentee = async ({ uid }) => {
     try {
-        const response = await fetch(`http://localhost:3000/mentors?menteeId=${uid}`);
+        const response = await fetch(`${BACKEND_URL}/mentors?menteeId=${uid}`);
         console.log(`Getting mentors for mentee real ${uid} ${response.ok}`);
         if (response.ok) {
             // The request was successful, and the user exists
@@ -106,7 +108,7 @@ export const getMentorsForMentee = async ({ uid }) => {
 };
 
 export const signupMenteeForMentor = async ({ menteeId, mentorId }) => {
-    const url = 'http://localhost:3000/signup'; // Adjust the URL to your backend endpoint
+    const url = `${BACKEND_URL}/signup`; // Adjust the URL to your backend endpoint
     console.log(`Calling signupMenteeForMentor ${menteeId} ${mentorId}`);
     try {
         const response = await fetch(url, {
@@ -118,14 +120,13 @@ export const signupMenteeForMentor = async ({ menteeId, mentorId }) => {
         });
 
         if (!response.ok) {
-            const message = `An error occurred: ${response.statusText}`;
-            throw new Error(message);
+            const errorData = await response.json();
+            throw new Error(errorData.error);
         }
 
         const result = await response.json();
         return result; // This could be the confirmation message or details about the signup
     } catch (error) {
-        console.error('Error during mentee signup for mentor:', error);
         throw error; // Rethrow the error so you can handle it in the component
     }
 };
