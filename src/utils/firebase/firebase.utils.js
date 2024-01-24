@@ -12,13 +12,20 @@ import {
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
 import { checkIfMenteeExists, createMentee } from './connect-api.utils';
 
+console.log(`API_KEY: ${process.env.REACT_APP_API_KEY}\n
+${process.env.REACT_APP_API_KEY}\n
+${process.env.REACT_APP_AUTH_DOMAIN}\n
+${process.env.REACT_APP_PROJECT_ID}\n
+${process.env.REACT_APP_STORAGE_BUCKET}\n
+${process.env.REACT_APP_MESSAGING_SENDER_ID}\n
+${process.env.REACT_APP_APP_ID}`)
 const firebaseConfig = {
-    apiKey: "AIzaSyCylBNsuLOkI0Kr1wYWBWmuU4x8YXAuVvA",  // Okay to have this exposed
-    authDomain: "crwn-clothing-db-ac9fd.firebaseapp.com",
-    projectId: "crwn-clothing-db-ac9fd",
-    storageBucket: "crwn-clothing-db-ac9fd.appspot.com",
-    messagingSenderId: "854333886956",
-    appId: "1:854333886956:web:764dfac700d849f2dfb0c9"
+    apiKey: process.env.REACT_APP_API_KEY,
+    authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+    projectId: process.env.REACT_APP_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_APP_ID
 };
 
 
