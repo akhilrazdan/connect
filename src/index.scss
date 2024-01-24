@@ -5,8 +5,17 @@ body {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
+
+
   -moz-osx-font-smoothing: grayscale;
 }
+
+// html {
+//   font-family: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+//   font-size: 1.3em;
+//   padding: 2rem;
+//   line-height: 1.5rem;
+// }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

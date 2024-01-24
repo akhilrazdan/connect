@@ -57,9 +57,9 @@ const MentorCard = ({ mentor }) => {
         <div className='mentor-card-container' >
             <div className='image-container'>
                 <img src={image_url} alt='mentor' onClick={() => openModal(mentor)} />
-                {is_registered && <div className='registered-overlay'>Registered</div>}
+                {is_registered && <div className='registered-overlay'>Requested</div>}
                 {!is_registered && !is_available && <div className='registered-overlay'>Class full</div>}
-                {signupStatus === 'pending' && <div className='registered-overlay'>Signing up...</div>}
+                {signupStatus === 'pending' && <div className='registered-overlay'>Requesting...</div>}
                 {!is_registered && is_available && signupStatus === 'idle' && choicesRemaining > 0 && (
                     <Button
                         buttonType='inverted'
