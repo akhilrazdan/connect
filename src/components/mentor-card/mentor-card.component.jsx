@@ -54,7 +54,7 @@ const MentorCard = ({ mentor }) => {
                 {!is_registered && is_available && signupStatus === 'idle' && choicesRemaining > 0 && (
                     <Button
                         buttonType='inverted'
-                        onClick={() => onMentorSignup({ menteeUid, mentorId: mentor_id })}
+                        onClick={() => onMentorSignup({ mentorId: mentor_id })}
                         className='signup-button'
                     >
                         Sign Up
