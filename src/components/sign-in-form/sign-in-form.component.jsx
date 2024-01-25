@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
     signInWithGooglePopup,
     signInWithUserWithEmailAndPassword as signInAuthUserWithEmailAndPassword,
+    getIdTokenResult
 
 } from "../../utils/firebase/firebase.utils";
 import FormInput from "../form-input/form-input.component";

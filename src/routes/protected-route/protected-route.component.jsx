@@ -2,16 +2,20 @@ import { useContext } from "react";
 import { Navigate } from 'react-router-dom';
 import { UserContext } from "../../contexts/user.context";
 
+const ProtectedRoute = ({ element: Component, roles, ...rest }) => {
+    const { currentUser } = useContext(UserContext);
 
-const ProtectedRoute = ({ element: Component, ...rest }) => {
-    const { isAuthenticated } = useContext(UserContext); // Replace with your method of checking auth status
-
-    if (!isAuthenticated) {
+    if (!currentUser) {
         // User is not authenticated, redirect to the auth page
         return <Navigate to="/auth" />;
     }
 
-    // User is authenticated, render the component
+    if (roles && !roles.includes(currentUser.role)) {
+        // User does not have the right role, redirect or show unauthorized
+        return <Navigate to="/unauthorized" />;
+    }
+
+    // User is authenticated and has the right role, render the component
     return <Component {...rest} />;
 };
 

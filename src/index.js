@@ -1,22 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.scss';
-import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { UserProvider } from './contexts/user.context';
-import { MentorsProvider } from './contexts/mentors.context';
-import { UserMetadataProvider } from './contexts/user-metadata.context';
+
+import './index.scss';
+import AppWrapper from './AppWrapper';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
         <BrowserRouter>
             <UserProvider>
-                <UserMetadataProvider>
-                    <MentorsProvider>
-                        <App />
-                    </MentorsProvider>
-                </UserMetadataProvider>
+                <AppWrapper />
             </UserProvider>
         </BrowserRouter>
     </React.StrictMode>

@@ -13,16 +13,17 @@ export const UserMetadataProvider = ({ children }) => {
 
     useEffect(() => {
         const fetchUserDetails = async () => {
-            console.log("1. userMetadata", currentUser)
+            console.log("1. currentUser", currentUser)
             if (currentUser && currentUser.uid) {
                 try {
-                    console.log(`currentUser ${JSON.stringify(currentUser)}`)
-                    const response = await getMentee({ uid: currentUser.uid });
+                    const response = await getMentee({});
                     console.log(`userMetadata ${JSON.stringify(response)}`)
                     setUserMetadata(response)
                 } catch (error) {
                     console.error('Error fetching user details:', error);
                 }
+            } else {
+                setUserMetadata(null)
             }
         };
 

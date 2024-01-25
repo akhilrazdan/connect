@@ -5,7 +5,7 @@ import MentorList from '../MentorList/mentor-list.component';
 
 const GroupedMentors = () => {
   const { mentorsGroupedByIaf: mentorsMap } = useContext(MentorsContext);
-
+  console.log("In Grouped mentors")
   return (
     <Fragment>
       {Object.keys(mentorsMap).map((iaf_name) => {

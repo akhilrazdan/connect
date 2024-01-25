@@ -1,15 +1,20 @@
+import {
+    getIdTokenBearer
+} from './firebase.utils'
+
 const BACKEND_URL = process.env.REACT_APP_CONNECT_API_ENDPOINT;
 
-export const createMentee = async ({ uid, name, email }) => {
+export const createUser = async ({ name, email }) => {
     try {
-        console.log(`Calling createMentee ${uid} ${name} ${email}`);
+        const idToken = await getIdTokenBearer();
+        console.log(`Calling createMentee ${idToken} ${name} ${email}`);
         const response = await fetch(`${BACKEND_URL}/user`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${idToken}` // Include the ID token in the request headers
             },
             body: JSON.stringify({
-                uid,
                 name,
                 email
             })
@@ -31,11 +36,16 @@ export const createMentee = async ({ uid, name, email }) => {
         return { error: true, message: error.message };
     }
 };
-export const getMentee = async ({ uid }) => {
+export const getMentee = async ({ }) => {
     console.log(`Backend : ${BACKEND_URL}`)
     try {
-        const response = await fetch(`${BACKEND_URL}/user/${uid}`);
-        console.log(`Calling getMentee ${uid} ${response.ok}`);
+        const idToken = await getIdTokenBearer();
+        const response = await fetch(`${BACKEND_URL}/user`, {
+            headers: {
+                'Authorization': `Bearer ${idToken}` // Include the ID token in the request headers
+            }
+        });
+        console.log(`Calling getMentee ${idToken} ${response.ok}`);
         if (response.ok) {
             // The request was successful, and the user exists
             const userMetadata = await response.json()
@@ -61,7 +71,12 @@ export const getMentee = async ({ uid }) => {
 
 export const checkIfMenteeExists = async ({ uid }) => {
     try {
-        const response = await fetch(`${BACKEND_URL}/user/${uid}`);
+        const idToken = await getIdTokenBearer();
+        const response = await fetch(`${BACKEND_URL}/user`, {
+            headers: {
+                'Authorization': `Bearer ${idToken}` // Include the ID token in the request headers
+            }
+        });
         console.log(`Calling checkIfMenteeExists ${uid} ${response.ok}`);
         if (response.ok) {
             // The request was successful, and the user exists
@@ -81,10 +96,15 @@ export const checkIfMenteeExists = async ({ uid }) => {
     }
 };
 
-export const getMentorsForMentee = async ({ uid }) => {
+export const getMentorsForMentee = async ({ }) => {
     try {
-        const response = await fetch(`${BACKEND_URL}/mentors?menteeId=${uid}`);
-        console.log(`Getting mentors for mentee real ${uid} ${response.ok}`);
+        const idToken = await getIdTokenBearer();
+        const response = await fetch(`${BACKEND_URL}/mentors`, {
+            headers: {
+                'Authorization': `Bearer ${idToken}` // Include the ID token in the request headers
+            }
+        });
+        console.log(`Getting mentors for mentee real ${idToken} ${response.ok}`);
         if (response.ok) {
             // The request was successful, and the user exists
             const mentors = await response.json()
@@ -93,7 +113,7 @@ export const getMentorsForMentee = async ({ uid }) => {
             // The request was unsuccessful, and the user does not exist
 
             const errorData = await response.json();
-            console.error(`AKhilz response ${JSON.stringify(errorData)}`)
+            console.error(`Akhilz response ${JSON.stringify(errorData)}`)
             return null;
         } else {
             // Handle other potential status codes (e.g., server errors)
@@ -107,16 +127,18 @@ export const getMentorsForMentee = async ({ uid }) => {
     }
 };
 
-export const signupMenteeForMentor = async ({ menteeId, mentorId }) => {
+export const signupMenteeForMentor = async ({ mentorId }) => {
     const url = `${BACKEND_URL}/signup`; // Adjust the URL to your backend endpoint
-    console.log(`Calling signupMenteeForMentor ${menteeId} ${mentorId}`);
     try {
+        const idToken = await getIdTokenBearer();
+        console.log(`Calling signupMenteeForMentor ${idToken} ${mentorId}`);
         const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${idToken}` // Include the ID token in the request headers
             },
-            body: JSON.stringify({ menteeId, mentorId }),
+            body: JSON.stringify({ idToken, mentorId }),
         });
 
         if (!response.ok) {

@@ -3,6 +3,7 @@ import { useState, createContext, useEffect, useContext } from 'react';
 // import MENTORS from '../assets/mentors-list.json'
 import { UserMetadataContext } from './user-metadata.context';
 import { getMentorsForMentee } from '../utils/firebase/connect-api.utils';
+import { UserContext } from './user.context';
 
 export const MentorsContext = createContext({
     mentorsGroupedByIaf: {},
@@ -14,6 +15,7 @@ export const MentorsContext = createContext({
 
 export const MentorsProvider = ({ children }) => {
     const { userMetadata } = useContext(UserMetadataContext);
+    const { currentUser } = useContext(UserContext);
 
     const [mentorsGroupedByIaf, setMentorsGroupedByIaf] = useState({});
     const [signupsTotal, setSignupsTotal] = useState(0);
@@ -21,9 +23,11 @@ export const MentorsProvider = ({ children }) => {
     const [choicesRemaining, setChoicesRemaining] = useState(maxMenteeChoices - signupsTotal)
 
     const refreshMentors = async () => {
+        console.log('Refreshing mentors')
         if (userMetadata && userMetadata.uid) {
             try {
-                const { mentors, signupsTotal, maxMenteeChoices } = await getMentorsForMentee({ uid: userMetadata.uid });
+                console.log(`currentUser oho${JSON.stringify(currentUser)}`)
+                const { mentors, signupsTotal, maxMenteeChoices } = await getMentorsForMentee({});
                 // group mentors into a map by iaf key
                 const groupedMentors = mentors.reduce((accumulator, mentor) => {
                     // If the accumulator does not have the key for this 'iaf', create it
@@ -50,7 +54,16 @@ export const MentorsProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        refreshMentors()
+        // Reset state when userMetadata changes (e.g., user signs out or signs in)
+        setMentorsGroupedByIaf({});
+        setSignupsTotal(0);
+        setMaxMenteeChoices(3);
+        setChoicesRemaining(3); // Assuming 3 is the initial value for maxMenteeChoices
+
+        // Fetch mentors if a new user signs in
+        if (userMetadata && userMetadata.uid) {
+            refreshMentors()
+        }
     }, [userMetadata])
 
     const value = { refreshMentors, mentorsGroupedByIaf, signupsTotal, maxMenteeChoices, choicesRemaining };

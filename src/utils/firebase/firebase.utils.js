@@ -6,11 +6,10 @@ import {
     signInWithPopup,
     GoogleAuthProvider,
     signOut,
-    onAuthStateChanged
-
+    onAuthStateChanged,
 } from 'firebase/auth'
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
-import { checkIfMenteeExists, createMentee } from './connect-api.utils';
+import { checkIfMenteeExists, createUser } from './connect-api.utils';
 
 console.log(`API_KEY: ${process.env.REACT_APP_API_KEY}\n
 ${process.env.REACT_APP_API_KEY}\n
@@ -36,6 +35,9 @@ const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({
     prompt: 'select_account'
 });
+
+export const getIdTokenResult = async () => await getAuth().currentUser.getIdTokenResult(true)
+export const getIdTokenBearer = async () => await getAuth().currentUser.getIdToken()
 
 export const auth = getAuth();
 export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
@@ -84,22 +86,14 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
 
     return userDocRef;
 };
-
+// TODO(akhilz) Move to connect api 
 export const createUserUsingBackendApi = async (userAuth, additionalInformation = {}) => {
 
     try {
-        // Check if user already exists
-        const exists = await checkIfMenteeExists({ uid: userAuth.uid })
-
-        if (exists) {
-            console.log('User already exists. No need to create a new one.');
-            return; // Exit the function early if the user already exists
-        }
         const displayName = additionalInformation.displayName || userAuth.displayName;
         const email = userAuth.email;
-        const uid = userAuth.uid;
         // If user does not exist, proceed with creating the user
-        const response = await createMentee({ uid: userAuth.uid, name: displayName, email })
+        const response = await createUser({ name: displayName, email })
         console.log('newMentee:', JSON.stringify(response));
         if (!response.error) {
             // Handle successful user creation

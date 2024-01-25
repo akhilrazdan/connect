@@ -5,6 +5,8 @@ import { UserMetadataContext } from '../../contexts/user-metadata.context';
 import { MentorsContext } from '../../contexts/mentors.context'
 import Modal from '../modal/modal.component';
 import './mentor-card.styles.scss'
+import { UserContext } from '../../contexts/user.context';
+import { getIdTokenResult } from '../../utils/firebase/firebase.utils';
 
 const MentorCard = ({ mentor }) => {
     const { mentor_id, name, max_mentor_capacity, current_mentee_count, is_registered, image_url, description } = mentor;
@@ -30,6 +32,7 @@ const MentorCard = ({ mentor }) => {
 
 
     const { userMetadata } = useContext(UserMetadataContext);
+    const { currentUser } = useContext(UserContext);
     const menteeUid = userMetadata.uid;
     console.log(`userMetadata in MentorCard ${JSON.stringify(userMetadata)}, ${menteeUid}`)
 
@@ -38,7 +41,7 @@ const MentorCard = ({ mentor }) => {
         setSignupStatus('pending');
 
         try {
-            const result = await signupMenteeForMentor({ menteeId: menteeUid, mentorId }); // TODO-akhilz Correct this disaster
+            const result = await signupMenteeForMentor({ mentorId }); // TODO-akhilz Correct this disaster
             console.log(result); // Handle result if needed
             setSignupStatus('success');
 
