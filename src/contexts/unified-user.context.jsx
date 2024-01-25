@@ -4,16 +4,16 @@ import { getMentee } from '../utils/firebase/connect-api.utils';
 
 export const UnifiedUserContext = createContext({
     currentUser: null,
-    userMetadata: null,
     // Other state setters as needed
 });
 
 export const UnifiedUserProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const initializationDone = useRef(false);
-
+    const [loading, setLoading] = useState(true); // Add a loading state
     useEffect(() => {
         const unsubscribe = onAuthStateChangedListener(async (user) => {
+            setLoading(true); // Start loading
             if (user && !initializationDone.current) {
                 // Fetch user metadata when user is authenticated
                 try {
@@ -36,10 +36,11 @@ export const UnifiedUserProvider = ({ children }) => {
                 setCurrentUser(null);
                 initializationDone.current = false;
             }
+            setLoading(false); // Stop loading
         });
         return unsubscribe;
     }, []);
 
-    const value = { currentUser };
+    const value = { currentUser, loading };
     return <UnifiedUserContext.Provider value={value}>{children}</UnifiedUserContext.Provider>;
 };

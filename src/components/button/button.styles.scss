@@ -43,4 +43,12 @@
       border: none;
     }
   }
+
+  &.loading {
+    cursor: not-allowed;
+
+    .loading-indicator {
+      // Styles for your loading indicator (e.g., spinner)
+    }
+  }
 }
