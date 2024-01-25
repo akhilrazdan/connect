@@ -1,24 +1,20 @@
 import React from 'react';
 import App from './App';
-import { UserContext, UserProvider } from './contexts/user.context';
+import { UnifiedUserContext } from './contexts/unified-user.context';
 import { useContext } from 'react';
 import { MentorsProvider } from './contexts/mentors.context';
-import { UserMetadataProvider } from './contexts/user-metadata.context';
 
 const AppWrapper = () => {
-    const { currentUser } = useContext(UserContext);
-    console.log(`From AppWrapper ${currentUser}`);
+    const { currentUser } = useContext(UnifiedUserContext);
 
     return (
-        <UserMetadataProvider>
-            {currentUser?.role === 'student' ? (
-                <MentorsProvider>
-                    <App />
-                </MentorsProvider>
-            ) : (
+        currentUser?.role === 'student' ? (
+            <MentorsProvider>
                 <App />
-            )}
-        </UserMetadataProvider>
+            </MentorsProvider>
+        ) : (
+            <App />
+        )
     );
 };
 

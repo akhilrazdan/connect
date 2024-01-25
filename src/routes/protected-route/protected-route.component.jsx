@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import { Navigate } from 'react-router-dom';
-import { UserContext } from "../../contexts/user.context";
+import { UnifiedUserContext } from "../../contexts/unified-user.context";
 
 const ProtectedRoute = ({ element: Component, roles, ...rest }) => {
-    const { currentUser } = useContext(UserContext);
+    const { currentUser } = useContext(UnifiedUserContext);
 
     if (!currentUser) {
         // User is not authenticated, redirect to the auth page

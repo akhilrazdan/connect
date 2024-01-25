@@ -48,12 +48,11 @@ export const getMentee = async ({ }) => {
         console.log(`Calling getMentee ${idToken} ${response.ok}`);
         if (response.ok) {
             // The request was successful, and the user exists
-            const userMetadata = await response.json()
-            console.log(`response userMetadata ${JSON.stringify(userMetadata)}`)
-            return userMetadata;
+            const userDetails = await response.json()
+            console.log(`response userDetails ${JSON.stringify(userDetails)}`)
+            return userDetails;
         } else if (response.status === 404) {
             // The request was unsuccessful, and the user does not exist
-
             const errorData = await response.json();
             console.error(`AKhilz response ${JSON.stringify(errorData)}`)
             return null;
@@ -104,7 +103,6 @@ export const getMentorsForMentee = async ({ }) => {
                 'Authorization': `Bearer ${idToken}` // Include the ID token in the request headers
             }
         });
-        console.log(`Getting mentors for mentee real ${idToken} ${response.ok}`);
         if (response.ok) {
             // The request was successful, and the user exists
             const mentors = await response.json()

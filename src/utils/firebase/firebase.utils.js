@@ -36,8 +36,8 @@ googleProvider.setCustomParameters({
     prompt: 'select_account'
 });
 
-export const getIdTokenResult = async () => await getAuth().currentUser.getIdTokenResult(true)
-export const getIdTokenBearer = async () => await getAuth().currentUser.getIdToken()
+export const getIdTokenResult = async (forceRefresh = false) => await getAuth().currentUser.getIdTokenResult(forceRefresh)
+export const getIdTokenBearer = async (forceRefresh = false) => await getAuth().currentUser.getIdToken(forceRefresh)
 
 export const auth = getAuth();
 export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);

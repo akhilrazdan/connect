@@ -1,9 +1,8 @@
 import { useState, createContext, useEffect, useContext } from 'react';
 
 // import MENTORS from '../assets/mentors-list.json'
-import { UserMetadataContext } from './user-metadata.context';
 import { getMentorsForMentee } from '../utils/firebase/connect-api.utils';
-import { UserContext } from './user.context';
+import { UnifiedUserContext } from './unified-user.context';
 
 export const MentorsContext = createContext({
     mentorsGroupedByIaf: {},
@@ -14,8 +13,7 @@ export const MentorsContext = createContext({
 });
 
 export const MentorsProvider = ({ children }) => {
-    const { userMetadata } = useContext(UserMetadataContext);
-    const { currentUser } = useContext(UserContext);
+    const { currentUser } = useContext(UnifiedUserContext);
 
     const [mentorsGroupedByIaf, setMentorsGroupedByIaf] = useState({});
     const [signupsTotal, setSignupsTotal] = useState(0);
@@ -24,7 +22,7 @@ export const MentorsProvider = ({ children }) => {
 
     const refreshMentors = async () => {
         console.log('Refreshing mentors')
-        if (userMetadata && userMetadata.uid) {
+        if (currentUser && currentUser.uid) {
             try {
                 console.log(`currentUser oho${JSON.stringify(currentUser)}`)
                 const { mentors, signupsTotal, maxMenteeChoices } = await getMentorsForMentee({});
@@ -54,17 +52,17 @@ export const MentorsProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        // Reset state when userMetadata changes (e.g., user signs out or signs in)
+        // Reset state when user changes (e.g., user signs out or signs in)
         setMentorsGroupedByIaf({});
         setSignupsTotal(0);
         setMaxMenteeChoices(3);
         setChoicesRemaining(3); // Assuming 3 is the initial value for maxMenteeChoices
 
         // Fetch mentors if a new user signs in
-        if (userMetadata && userMetadata.uid) {
+        if (currentUser && currentUser.uid) {
             refreshMentors()
         }
-    }, [userMetadata])
+    }, [currentUser])
 
     const value = { refreshMentors, mentorsGroupedByIaf, signupsTotal, maxMenteeChoices, choicesRemaining };
 

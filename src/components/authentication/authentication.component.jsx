@@ -4,11 +4,11 @@ import SignInForm from "../sign-in-form/sign-in-form.component";
 import './authentication.styles.scss';
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
-import { UserContext } from "../../contexts/user.context";
+import { UnifiedUserContext } from "../../contexts/unified-user.context";
 
 const Authentication = () => {
     const navigate = useNavigate()
-    const { currentUser } = useContext(UserContext)
+    const { currentUser } = useContext(UnifiedUserContext)
     useEffect(() => {
         if (currentUser) {
             navigate('/')

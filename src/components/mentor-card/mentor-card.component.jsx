@@ -1,12 +1,9 @@
 import Button from '../button/button.component';
 import { signupMenteeForMentor } from '../../utils/firebase/connect-api.utils';
 import { useState, useContext } from 'react';
-import { UserMetadataContext } from '../../contexts/user-metadata.context';
 import { MentorsContext } from '../../contexts/mentors.context'
 import Modal from '../modal/modal.component';
 import './mentor-card.styles.scss'
-import { UserContext } from '../../contexts/user.context';
-import { getIdTokenResult } from '../../utils/firebase/firebase.utils';
 
 const MentorCard = ({ mentor }) => {
     const { mentor_id, name, max_mentor_capacity, current_mentee_count, is_registered, image_url, description } = mentor;
@@ -30,19 +27,11 @@ const MentorCard = ({ mentor }) => {
         setShowModal(false);
     };
 
-
-    const { userMetadata } = useContext(UserMetadataContext);
-    const { currentUser } = useContext(UserContext);
-    const menteeUid = userMetadata.uid;
-    console.log(`userMetadata in MentorCard ${JSON.stringify(userMetadata)}, ${menteeUid}`)
-
-    const onMentorSignup = async ({ menteeUid, mentorId }) => {
-        console.log(`menteeUid ${menteeUid} mentorId ${mentorId}`)
+    const onMentorSignup = async ({ mentorId }) => {
         setSignupStatus('pending');
 
         try {
             const result = await signupMenteeForMentor({ mentorId }); // TODO-akhilz Correct this disaster
-            console.log(result); // Handle result if needed
             setSignupStatus('success');
 
             // Trigger a refresh of all mentors
@@ -53,7 +42,6 @@ const MentorCard = ({ mentor }) => {
             setSignupStatus('error');
         }
     }
-    console.log(`max_mentor_capacity ${max_mentor_capacity} current_mentee_count ${current_mentee_count}`)
     const is_available = max_mentor_capacity - current_mentee_count > 0;
 
     return (
