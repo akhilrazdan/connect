@@ -19,7 +19,6 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         display: flex;
         flex-direction: column;
-        max-height: 100vh; // Limit the total height of the modal content
 
 
         .modal-image-container {
@@ -60,11 +59,15 @@
 
     .close {
         position: absolute;
-        top: 10px;
-        right: 20px;
-        font-size: 30px;
-        font-weight: bold;
+        top: 10px; // Adjust as necessary
+        right: 10px; // Adjust as necessary
+        z-index: 1100; // Ensure it's above other elements
+        cursor: pointer;
+        font-size: 30px; // Adjust as necessary
         color: #fff;
+        padding: 10px; // Increase padding to make the button easier to tap
+        border-radius: 50%;
+
         cursor: pointer;
 
         &:hover {
