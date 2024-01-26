@@ -60,21 +60,11 @@ const MentorCard = ({ mentor }) => {
                         Sign Up
                     </Button>
                 )}
-
-                {isBioVisible && (
-                    <div className='bio-modal'>
-                        <div className='bio-content'>
-                            <h2>{name}'s Bio</h2>
-                            <p>Their bio</p>
-                            <button onClick={() => setBioVisible(false)}>Close</button>
-                        </div>
-                    </div>
-                )}
             </div>
 
             <div className='footer'>
                 <div className='row'>
-                    <div className='name'><a href='#' onClick={handleBioLinkClick}>{name}</a></div>
+                    <div className='name'><a href='#' onClick={() => openModal(mentor)}>{name}</a></div>
 
                     {!is_registered && is_available && (current_mentee_count > 0) && <div className='slots'>{max_mentor_capacity - current_mentee_count} left!</div>}
                     {/* {signupStatus === 'success' && <p>Signed up successfully!</p>} */}

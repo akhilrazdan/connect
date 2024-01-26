@@ -4,127 +4,71 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 1);
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: rgba(0, 0, 0, 0.8);
     z-index: 1000;
-    overflow: hidden;
-    /* Prevent scrolling of the background page */
-}
 
-.modal-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    /* Centers content vertically */
-    max-width: 90%;
-    max-height: 90vh;
-    overflow: auto;
-    /* Allows scrolling if content is larger than the screen */
-    background: rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    /* Adds some padding inside the modal */
-    box-sizing: border-box;
-    /* Ensures padding doesn't affect overall width/height */
-}
-
-.modal-image-container {
-    width: 100%;
-    /* Takes the full width of the modal content */
-    max-height: 60vh;
-    /* Limits the height to ensure it fits within the viewport, adjustable based on your needs */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.modal-image {
-    max-width: 100%;
-    /* Ensures image doesn't exceed the container's width */
-    max-height: 60vh;
-    /* Ensures image doesn't exceed the container's height */
-    margin: auto;
-    /* Centers the image within the container */
-}
-
-.close {
-    position: fixed;
-    top: 20px;
-    right: 25px;
-    color: #fff;
-    font-size: 30px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 1010;
-}
-
-.modal-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 90%;
-    max-height: 90vh;
-    /* Limit the maximum height of the modal content */
-    overflow: auto;
-    /* Allow scrolling inside the modal content if necessary */
-    background: rgba(0, 0, 0, 0.8);
-    /* Background for the whole modal content */
-}
-
-.modal-image-container {
-    width: auto;
-    /* Allows the container to shrink or expand based on the image size */
-    max-width: 100%;
-    /* Ensures the container does not exceed the width of the modal content */
-    max-height: 60vh;
-    /* Limits the height to ensure it fits within the viewport */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.modal-image {
-    width: auto;
-    /* Allows the image to scale based on its aspect ratio */
-    height: auto;
-    /* Allows the image to scale based on its aspect ratio */
-    max-width: 100%;
-    /* Ensures image doesn't exceed the container's width */
-    max-height: 60vh;
-    /* Ensures image doesn't exceed the container's height */
-    object-fit: contain;
-    /* Ensures the image maintains its aspect ratio */
-}
+    .modal-content {
+        position: relative;
+        background: #fff;
+        padding: 20px;
+        max-width: 600px;
+        width: 90%;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        max-height: 100vh; // Limit the total height of the modal content
 
 
-.modal-text {
-    width: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    /* Semi-transparent background */
-    color: white;
-    padding: 20px;
-    box-sizing: border-box;
-    text-align: left;
-    overflow: auto;
-    /* Allow scrolling if the content overflows */
-}
+        .modal-image-container {
+            flex-shrink: 0; // Prevent the image container from shrinking
+            max-height: 70vh;
+            overflow: hidden;
 
-.modal-name {
-    font-weight: bold;
-}
+            img {
+                width: 100%;
+                height: auto;
+                max-height: 70vh;
+                object-fit: contain;
+            }
+        }
 
-.modal-bio {
-    margin-top: 10px;
-}
+        .modal-text,
+        .modal-text-overlay {
+            flex-grow: 1; // Allow the text container to grow
+            overflow-y: auto; // Add scroll if the content is too long
+            max-height: 70vh; // Ensure it doesn't take more than half of the viewport
+            padding: 20px;
+            background: #f9f9f9; // Slightly off-white background for the bio text
+            color: #333; // Darker text color for readability
 
-.modal-text-overlay {
-    position: absolute;
-    /* Position the text panel absolutely to overlay on the image */
-    bottom: 0;
+            h2 {
+                margin-top: 0;
+            }
+        }
+
+        .modal-text-overlay {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+        }
+    }
+
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        font-size: 30px;
+        font-weight: bold;
+        color: #fff;
+        cursor: pointer;
+
+        &:hover {
+            color: #f1f1f1;
+        }
+    }
 }
