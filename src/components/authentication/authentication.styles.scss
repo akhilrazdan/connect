@@ -1,6 +1,43 @@
 .authentication-container {
+    width: 90%; // Responsive width, max-width to limit size on larger screens
+    max-width: 450px; // Adjust this value based on your design
+    margin: auto; // Center horizontally
+    padding: 40px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Optional: for subtle shadow
+    background-color: #fff; // Adjust based on your color scheme
+    border-radius: 8px; // Optional: for rounded corners
+
     display: flex;
-    width: 900px;
-    justify-content: space-between;
-    margin: 30px auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); // Center vertically & horizontally
+
+    .switch-form {
+        margin-top: 20px; // Add some space above the switch section
+        text-align: center; // Center the text
+
+        p {
+            font-size: 0.9rem; // Adjust the font size as needed
+            color: #333; // Change the color as needed
+
+            span {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+                margin-left: 5px;
+                font-weight: bold; // Start with bold text
+
+                &:hover {
+                    font-weight: bold; // Start with bold text
+                    text-decoration: solid underline;
+                    color: blue; // Change as needed
+                }
+            }
+        }
+    }
 }
