@@ -67,6 +67,50 @@ export const getMentee = async ({ }) => {
         throw error;
     }
 };
+// TODO(akhilz) Move to connect api 
+export const createUserUsingBackendApi = async (userAuth, additionalInformation = {}) => {
+
+    try {
+        const displayName = additionalInformation.displayName || userAuth.displayName;
+        const email = userAuth.email;
+        // If user does not exist, proceed with creating the user
+        const userDetails = await getMentee({});
+        if (!userDetails) {
+            const response = await createUser({ name: displayName, email })
+            return response;
+        }
+    } catch (error) {
+        console.error('Error in creating the mentee using backend API:', error)
+        throw error; // rethrow the error if you want to handle it outside this function
+    }
+};
+
+export const setUserClaims = async () => {
+    try {
+        const idToken = await getIdTokenBearer();
+        const response = await fetch(`${BACKEND_URL}/userclaims`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${idToken}` // Include the ID token in the request headers
+            }
+        });
+        if (response.ok) {
+            // The request was successful, and the user exists
+            return true;
+        } else if (response.status === 404) {
+            // The request was unsuccessful, and the user does not exist
+            return false;
+        } else {
+            // Handle other potential status codes (e.g., server errors)
+            console.error('Received unexpected status code:', response.status);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error in creating the mentee using backend API:', error)
+        throw error; // rethrow the error if you want to handle it outside this function
+    }
+}
 
 export const checkIfMenteeExists = async ({ uid }) => {
     try {

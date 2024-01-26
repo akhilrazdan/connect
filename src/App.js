@@ -10,8 +10,8 @@ const App = () => {
   console.log("Loading App.js")
   return (
     <Routes>
-      <Route path='/' element={<ProtectedRoute element={Navigation} roles={['guest', 'student']} />}>
-        <Route index element={<ProtectedRoute element={GroupedMentors} roles={['student']} />} />
+      <Route path='/' element={<ProtectedRoute element={Navigation} roles={['guest', 'mentee']} />}>
+        <Route index element={<ProtectedRoute element={GroupedMentors} roles={['mentee']} />} />
         <Route path='/unauthorized' element={<ProtectedRoute element={Unauthorized} roles={['guest']} />} />
       </Route>
       <Route path='/auth' element={<Authentication />} />

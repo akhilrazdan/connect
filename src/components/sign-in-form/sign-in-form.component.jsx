@@ -3,12 +3,12 @@ import {
     signInWithGooglePopup,
     signInWithUserWithEmailAndPassword as signInAuthUserWithEmailAndPassword,
     getIdTokenResult
-
 } from "../../utils/firebase/firebase.utils";
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
-import { createUserUsingBackendApi } from "../../utils/firebase/firebase.utils";
+import { setUserClaims, createUserUsingBackendApi } from "../../utils/firebase/connect-api.utils";
 import { UnifiedUserContext } from "../../contexts/unified-user.context";
+import { useNavigate } from "react-router-dom";
 import './sign-in-form.styles.scss';
 
 const defaultFormFields = {
@@ -16,11 +16,22 @@ const defaultFormFields = {
     password: '',
 }
 
+
 const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { email, password } = formFields;
-    const { loading } = useContext(UnifiedUserContext);
+    const { loading, setSignInProcessComplete, setRole } = useContext(UnifiedUserContext);
+    const navigate = useNavigate();
 
+    const checkUserRoleAndNavigate = (role) => {
+        if (role === 'mentee') {
+            console.log('mentee navigated')
+            navigate('/');
+        } else {
+            console.log('guest navigated')
+            navigate('/unauthorized', { replace: true });
+        }
+    }
     const resetFormFields = () => {
         setFormFields(defaultFormFields);
     }
@@ -28,7 +39,14 @@ const SignInForm = () => {
     const signInWithGoogle = async () => {
         const { user } = await signInWithGooglePopup();
         try {
-            const response = await createUserUsingBackendApi(user);
+
+            await setUserClaims();
+            const response = await createUserUsingBackendApi(user)
+            const idTokenResult = await getIdTokenResult(true);
+            console.log(`idTokenResult after sign in ${idTokenResult}, role ${idTokenResult.claims.role}`)
+            setRole(idTokenResult.claims.role);
+            checkUserRoleAndNavigate(idTokenResult.claims.role);
+            setSignInProcessComplete(true);
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {
                 alert("Cannot create user, email already in use");
@@ -44,6 +62,11 @@ const SignInForm = () => {
 
         try {
             const { user } = await signInAuthUserWithEmailAndPassword(email, password)
+            await setUserClaims();
+            const idTokenResult = await getIdTokenResult(true);
+            console.log(`idTokenResult after sign in ${idTokenResult}, role ${idTokenResult.claims.role}`)
+            setRole(idTokenResult.claims.role);
+            checkUserRoleAndNavigate(idTokenResult.claims.role);
             resetFormFields();
         } catch (error) {
             switch (error.code) {

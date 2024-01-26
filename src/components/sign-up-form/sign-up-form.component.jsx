@@ -1,8 +1,11 @@
 import { useState, useContext } from "react";
-import { createAuthUserWithEmailAndPassword, createUserUsingBackendApi } from "../../utils/firebase/firebase.utils";
+import { createAuthUserWithEmailAndPassword, getIdTokenResult } from "../../utils/firebase/firebase.utils";
+import { setUserClaims, createUserUsingBackendApi } from "../../utils/firebase/connect-api.utils";
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 import './sign-up-form.styles.scss';
+import { useNavigate } from "react-router-dom";
+import { UnifiedUserContext } from "../../contexts/unified-user.context";
 
 
 const defaultFormFields = {
@@ -15,7 +18,18 @@ const defaultFormFields = {
 const SignUpForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { displayName, email, password, confirmPassword } = formFields;
+    const { setRole } = useContext(UnifiedUserContext);
+    const navigate = useNavigate();
 
+    const checkUserRoleAndNavigate = (role) => {
+        if (role === 'mentee') {
+            console.log('mentee navigated')
+            navigate('/');
+        } else {
+            console.log('guest navigated')
+            navigate('/unauthorized', { replace: true });
+        }
+    }
 
     const resetFormFields = () => {
         setFormFields(defaultFormFields);
@@ -31,8 +45,13 @@ const SignUpForm = () => {
 
         try {
             const { user } = await createAuthUserWithEmailAndPassword(email, password);
-            console.log(`Signup Form user ${user} ${displayName}`);
+            console.log(`Signup Form user ${JSON.stringify(user)} ${displayName}`);
+            await setUserClaims();
             await createUserUsingBackendApi(user, { displayName });
+            const idTokenResult = await getIdTokenResult(true);
+            console.log(`idTokenResult after sign in ${idTokenResult}, role ${idTokenResult.claims.role}`)
+            setRole(idTokenResult.claims.role);
+            checkUserRoleAndNavigate(idTokenResult.claims.role);
             resetFormFields();
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {

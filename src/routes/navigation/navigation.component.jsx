@@ -7,7 +7,7 @@ import './navigation.styles.scss';
 import { UnifiedUserContext } from "../../contexts/unified-user.context";
 
 const Navigation = () => {
-    const { currentUser } = useContext(UnifiedUserContext)
+    const { currentUser, role } = useContext(UnifiedUserContext)
 
     const signOutHandler = async () => {
         await signOutUser();

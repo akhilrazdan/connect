@@ -13,7 +13,7 @@ export const MentorsContext = createContext({
 });
 
 export const MentorsProvider = ({ children }) => {
-    const { currentUser } = useContext(UnifiedUserContext);
+    const { role } = useContext(UnifiedUserContext);
 
     const [mentorsGroupedByIaf, setMentorsGroupedByIaf] = useState({});
     const [signupsTotal, setSignupsTotal] = useState(0);
@@ -22,47 +22,64 @@ export const MentorsProvider = ({ children }) => {
 
     const refreshMentors = async () => {
         console.log('Refreshing mentors')
-        if (currentUser && currentUser.uid) {
-            try {
-                console.log(`currentUser oho${JSON.stringify(currentUser)}`)
-                const { mentors, signupsTotal, maxMenteeChoices } = await getMentorsForMentee({});
-                // group mentors into a map by iaf key
-                const groupedMentors = mentors.reduce((accumulator, mentor) => {
-                    // If the accumulator does not have the key for this 'iaf', create it
-                    if (!accumulator[mentor.iaf_name]) {
-                        accumulator[mentor.iaf_name] = [];
-                    }
+        try {
+            const { mentors, signupsTotal, maxMenteeChoices } = await getMentorsForMentee({});
+            // group mentors into a map by iaf key
+            const groupedMentors = mentors.reduce((accumulator, mentor) => {
+                // If the accumulator does not have the key for this 'iaf', create it
+                if (!accumulator[mentor.iaf_name]) {
+                    accumulator[mentor.iaf_name] = [];
+                }
 
-                    // Push the current mentor to the array for this 'iaf'
-                    accumulator[mentor.iaf_name].push(mentor);
+                // Push the current mentor to the array for this 'iaf'
+                accumulator[mentor.iaf_name].push(mentor);
 
-                    // Return the accumulator for the next iteration
-                    return accumulator;
-                }, {}); // Initialize the accumulator as an empty object
-                console.log('mentors', mentors);
-                console.log('groupedMentors', groupedMentors);
-                setMentorsGroupedByIaf(groupedMentors);
-                setSignupsTotal(signupsTotal);
-                setMaxMenteeChoices(maxMenteeChoices);
-                setChoicesRemaining(maxMenteeChoices - signupsTotal); // Calculate the number of choices remaining for the user
-            } catch (error) {
-                console.error('Error fetching mentors:', error);
-            }
+                // Return the accumulator for the next iteration
+                return accumulator;
+            }, {}); // Initialize the accumulator as an empty object
+            console.log('mentors', mentors);
+            console.log('groupedMentors', groupedMentors);
+            setMentorsGroupedByIaf(groupedMentors);
+            setSignupsTotal(signupsTotal);
+            setMaxMenteeChoices(maxMenteeChoices);
+            setChoicesRemaining(maxMenteeChoices - signupsTotal); // Calculate the number of choices remaining for the user
+        } catch (error) {
+            console.error('Error fetching mentors:', error);
         }
     };
-
-    useEffect(() => {
-        // Reset state when user changes (e.g., user signs out or signs in)
+    const resetMentorsContext = () => {
+        console.log(`Cleaning up mentor context because the user signed out or role changed.`);
         setMentorsGroupedByIaf({});
         setSignupsTotal(0);
         setMaxMenteeChoices(3);
         setChoicesRemaining(3); // Assuming 3 is the initial value for maxMenteeChoices
+    };
 
-        // Fetch mentors if a new user signs in
-        if (currentUser && currentUser.uid) {
-            refreshMentors()
+    useEffect(() => {
+        // Function to reset the mentors context state
+        const resetMentorsContext = () => {
+            console.log(`Cleaning up mentor context because the user signed out or role changed.`);
+            setMentorsGroupedByIaf({});
+            setSignupsTotal(0);
+            setMaxMenteeChoices(3);
+            setChoicesRemaining(3); // Assuming 3 is the initial value for maxMenteeChoices
+        };
+
+        // Cleanup when the component unmounts or before the effect runs again
+        return resetMentorsContext;
+    }, [role]);
+
+    useEffect(() => {
+        // Fetch mentors if a new user signs in and the role is 'mentee'
+        if (role === 'mentee') {
+            console.log(`Refreshing mentor context because role changed to ${role}`);
+            refreshMentors();
+        } else {
+            // Explicitly call the reset function when the role is not 'mentee'
+            resetMentorsContext();
         }
-    }, [currentUser])
+    }, [role]); // Run this effect when `role` changes
+
 
     const value = { refreshMentors, mentorsGroupedByIaf, signupsTotal, maxMenteeChoices, choicesRemaining };
 

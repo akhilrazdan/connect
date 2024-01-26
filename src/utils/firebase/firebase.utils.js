@@ -9,7 +9,7 @@ import {
     onAuthStateChanged,
 } from 'firebase/auth'
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
-import { checkIfMenteeExists, createUser } from './connect-api.utils';
+import { checkIfMenteeExists, createUser, getMentee } from './connect-api.utils';
 
 console.log(`API_KEY: ${process.env.REACT_APP_API_KEY}\n
 ${process.env.REACT_APP_API_KEY}\n
@@ -93,14 +93,17 @@ export const createUserUsingBackendApi = async (userAuth, additionalInformation 
         const displayName = additionalInformation.displayName || userAuth.displayName;
         const email = userAuth.email;
         // If user does not exist, proceed with creating the user
-        const response = await createUser({ name: displayName, email })
-        console.log('newMentee:', JSON.stringify(response));
-        if (!response.error) {
-            // Handle successful user creation
-            return response.user;
-        } else {
-            // Handle errors or unsuccessful user creation
-            throw new Error(response.data);
+        const userDetails = await getMentee({});
+        if (!userDetails) {
+            const response = await createUser({ name: displayName, email })
+            console.log('newMentee:', JSON.stringify(response));
+            if (!response.error) {
+                // Handle successful user creation
+                return response.user;
+            } else {
+                // Handle errors or unsuccessful user creation
+                throw new Error(response.data);
+            }
         }
     } catch (error) {
         console.error('Error in creating the mentee using backend API:', error)

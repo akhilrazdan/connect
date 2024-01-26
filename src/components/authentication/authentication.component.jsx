@@ -8,13 +8,12 @@ import { UnifiedUserContext } from "../../contexts/unified-user.context";
 
 const Authentication = () => {
     const navigate = useNavigate()
-    const { currentUser } = useContext(UnifiedUserContext)
+    const { isSignInProcessComplete, currentUser } = useContext(UnifiedUserContext)
     useEffect(() => {
         if (currentUser) {
             navigate('/')
         }
-        return () => { }
-    }, [currentUser, navigate]);
+    }, [currentUser, isSignInProcessComplete]);
 
     return (<div className="authentication-container">
         <SignInForm />

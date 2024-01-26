@@ -1,46 +1,42 @@
-import React, { createContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import { onAuthStateChangedListener, getIdTokenResult } from '../utils/firebase/firebase.utils';
-import { getMentee } from '../utils/firebase/connect-api.utils';
 
 export const UnifiedUserContext = createContext({
     currentUser: null,
+    setCurrentUser: () => null,
+    isSignInProcessComplete: true,
+    setSignInProcessComplete: () => { },
+    role: null,
+    setRole: () => { },
     // Other state setters as needed
 });
 
 export const UnifiedUserProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
-    const initializationDone = useRef(false);
     const [loading, setLoading] = useState(true); // Add a loading state
+    const [isSignInProcessComplete, setSignInProcessComplete] = useState(false); // Add this line
+    const [role, setRole] = useState('guest'); // Add this line
+
     useEffect(() => {
         const unsubscribe = onAuthStateChangedListener(async (user) => {
-            setLoading(true); // Start loading
-            if (user && !initializationDone.current) {
-                // Fetch user metadata when user is authenticated
-                try {
-                    console.log("calling getMentee", user)
-                    await getMentee({});
-
-                    const idTokenResult = await getIdTokenResult(true);
-                    setCurrentUser({
-                        ...user,
-                        role: idTokenResult.claims?.role ?? 'guest'
-                    });
-                    initializationDone.current = true;
-
-                } catch (error) {
-                    console.error('Error fetching user metadata:', error);
-                    // Set an error state or handle as appropriate
-                }
+            setLoading(true);
+            console.log(`Current user changed to ${JSON.stringify(user)}`)
+            if (user) {
+                const idTokenResult = await getIdTokenResult()
+                setCurrentUser({
+                    ...user
+                });
+                setRole(idTokenResult.claims?.role ?? 'guest')
             } else {
                 // Reset state when user signs out
                 setCurrentUser(null);
-                initializationDone.current = false;
+                setRole(null);
             }
             setLoading(false); // Stop loading
         });
         return unsubscribe;
     }, []);
 
-    const value = { currentUser, loading };
+    const value = { currentUser, loading, setCurrentUser, setSignInProcessComplete, isSignInProcessComplete, role, setRole };
     return <UnifiedUserContext.Provider value={value}>{children}</UnifiedUserContext.Provider>;
 };
