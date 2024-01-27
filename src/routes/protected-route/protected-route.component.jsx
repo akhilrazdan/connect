@@ -16,7 +16,7 @@ const ProtectedRoute = ({ element: Component, roles, ...rest }) => {
     }
 
     // User is authenticated and has the right role, render the component
-    console.log(`Protected: User is authenticated and has the right role, render the component`)
+    console.log(`Protected: User is authenticated and has the right role ${role}, render the component`)
     return <Component {...rest} />;
 };
 

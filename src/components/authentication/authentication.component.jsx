@@ -1,21 +1,22 @@
 
 import SignUpForm from "../sign-up-form/sign-up-form.component";
 import SignInForm from "../sign-in-form/sign-in-form.component";
-import './authentication.styles.scss';
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UnifiedUserContext } from "../../contexts/unified-user.context";
 
+import './authentication.styles.scss';
+
 const Authentication = () => {
     const navigate = useNavigate();
-    const { isSignInProcessComplete, currentUser } = useContext(UnifiedUserContext);
+    const { currentUser } = useContext(UnifiedUserContext);
     const [formToShow, setFormToShow] = useState('signIn'); // 'signIn' or 'signUp'
 
     useEffect(() => {
         if (currentUser) {
             navigate('/');
         }
-    }, [currentUser, isSignInProcessComplete, navigate]);
+    }, [currentUser, navigate]);
 
     return (
         <div className="authentication-container">
