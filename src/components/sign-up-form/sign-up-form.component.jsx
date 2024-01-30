@@ -20,6 +20,7 @@ const SignUpForm = () => {
     const { displayName, email, password, confirmPassword } = formFields;
     const { setRole } = useContext(UnifiedUserContext);
     const navigate = useNavigate();
+    const [error, setError] = useState('');
 
     const checkUserRoleAndNavigate = (role) => {
         if (role === 'mentee') {
@@ -40,7 +41,8 @@ const SignUpForm = () => {
         event.preventDefault();
 
         if (password !== confirmPassword) {
-            alert("Passwords do not match");
+            setError("Passwords do not match");
+            return;
         }
 
         try {
@@ -54,10 +56,15 @@ const SignUpForm = () => {
             checkUserRoleAndNavigate(idTokenResult.claims.role);
             resetFormFields();
         } catch (error) {
+            // Check if the error message starts with "Firebase:" and remove it
+            let errorMessage = error.message;
+            if (error.message.startsWith("Firebase:")) {
+                errorMessage = error.message.substring("Firebase: ".length).trim();
+            }
             if (error.code === 'auth/email-already-in-use') {
-                alert("Cannot create user, email already in use");
+                setError(errorMessage);
             } else {
-                console.error("User creation encountered an error", error);
+                setError(`Error creating user: ${errorMessage}`);
             }
         }
 
@@ -84,6 +91,7 @@ const SignUpForm = () => {
 
                 <Button buttonType='button' type="submit">Sign Up</Button>
             </form>
+            {error && <p className="error-message">{error}</p>}
         </div>
 
     )

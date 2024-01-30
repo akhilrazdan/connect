@@ -21,6 +21,7 @@ const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { email, password } = formFields;
     const { loading, setSignInProcessComplete, setRole } = useContext(UnifiedUserContext);
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const checkUserRoleAndNavigate = (role) => {
@@ -49,9 +50,9 @@ const SignInForm = () => {
             setSignInProcessComplete(true);
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {
-                alert("Cannot create user, email already in use");
+                setError("Cannot create user, email already in use");
             } else {
-                console.error("User creation encountered an error", error);
+                setError("Error signing in: ", error.message);
             }
         }
     }
@@ -61,6 +62,7 @@ const SignInForm = () => {
         event.preventDefault();
 
         try {
+            setError('')
             const { user } = await signInAuthUserWithEmailAndPassword(email, password)
             await setUserClaims();
             const idTokenResult = await getIdTokenResult(true);
@@ -69,15 +71,21 @@ const SignInForm = () => {
             checkUserRoleAndNavigate(idTokenResult.claims.role);
             resetFormFields();
         } catch (error) {
+            let errorMessage = error.message;
+            if (error.message.startsWith("Firebase:")) {
+                errorMessage = error.message.substring("Firebase: ".length).trim();
+            }
             switch (error.code) {
                 case 'auth/wrong-password':
-                    alert('incorrect password for email');
+                    setError('Incorrect password for email');
                     break;
                 case 'auth/user-not-found':
-                    alert('no user associated with this email');
+                    setError('No user associated with this email');
                     break;
+                case 'auth/invalid-credential':
+                    setError('Invalid credentials. ')
                 default:
-                    console.log(error);
+                    setError(errorMessage);
             }
         }
 
@@ -103,6 +111,7 @@ const SignInForm = () => {
                     <Button type='button' buttonType='google' onClick={signInWithGoogle}>Google sign in</Button>
                 </div>
             </form>
+            {error && <p className="error-message">{error}</p>}
         </div>
 
     )
