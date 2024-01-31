@@ -1,4 +1,4 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, NavLink } from "react-router-dom";
 import { Fragment, useContext } from "react";
 import { signOutUser } from "../../utils/firebase/firebase.utils";
 import CrwnLogo from '../../assets/BatonnageLogo_Orange_Mentorship.png';
@@ -16,22 +16,26 @@ const Navigation = () => {
     return (
         <Fragment>
             <div className="navigation">
-                <Link className="logo-container" to='/'>
+                <NavLink className="logo-container" to='/'>
                     <img src={CrwnLogo} alt="Logo" className="logo-image" />
-                </Link>
+                </NavLink>
                 <div className="nav-links-container">
-                    Hi {currentUser ? currentUser.email : ""}
-                    <Link className="nav-link" to='/faq'>
-                        FAQ
-                    </Link>
-                    <Link className="nav-link" to='/my-learning'>
-                        MY LEARNING
-                    </Link>
-                    {currentUser ? (
-                        <span className="nav-link" onClick={signOutHandler}>SIGN OUT</span>
-                    ) : (<Link className="nav-link" to='/auth'>
-                        SIGN IN
-                    </Link>)}
+                    <div className="left-nav-links">
+                        <NavLink to='/' className="nav-link home" activeClassName="active-link">
+                            Home
+                        </NavLink>
+                        <NavLink to='/faq' className="nav-link faq" activeClassName="active" >
+                            FAQ
+                        </NavLink>
+                    </div>
+                    <div className="right-nav-links">
+                        <span >Hi {currentUser ? currentUser.email : ""}</span>
+                        {currentUser ? (
+                            <span className="nav-link" onClick={signOutHandler}>SIGN OUT</span>
+                        ) : (<NavLink className="nav-link" to='/auth'>
+                            SIGN IN
+                        </NavLink>)}
+                    </div>
                 </div>
             </div>
             <Outlet />
