@@ -61,6 +61,13 @@ export const UnifiedUserProvider = ({ children }) => {
             console.log(`Current user changed to ${JSON.stringify(user)}`)
             if (user) {
                 setIsInitialLogin(true); // Set flag on user login
+                const idTokenResult = await getIdTokenResult(true);
+                // Use the claims from idTokenResult for your application logic
+                console.log(`Setting role from ${role} to ${idTokenResult.claims.role}`)
+                setRole(idTokenResult.claims.role);
+                // If you need to update the user object in your state, 
+                // consider augmenting it with the new claims
+                setCurrentUser({ ...user, role: idTokenResult.claims.role });
             } else {
                 // Reset state when user signs out
                 setCurrentUser(null);
