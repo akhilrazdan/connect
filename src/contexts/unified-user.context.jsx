@@ -22,11 +22,17 @@ export const UnifiedUserProvider = ({ children }) => {
     console.log("Running User provider with current user", currentUser, isMenteeLoggedIn)
     // Handle changes in the 'role' state
     useEffect(() => {
+        if (isMenteeLoggedIn) {
+            console.log("Redirecting")
+            navigate('/')
+        } else {
+            console.log(`useEffect based on isMenteeLoggedIn but not changing anything`)
+        }
+    }, [isMenteeLoggedIn])
+    useEffect(() => {
         console.log(`useEffect triggered ${JSON.stringify(currentUser)}, ${role}`);
         if (currentUser && role === 'mentee') {
             setMenteeLoggedIn(true);
-            console.log("Redirecting")
-            navigate(('/'))
             setIsInitialLogin(false); // Reset flag after navigating
         } else {
             setMenteeLoggedIn(false);

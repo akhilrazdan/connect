@@ -72,6 +72,7 @@ const SignInForm = () => {
 
             if (!isUserAllowed) {
                 setError('User is not allowed to sign in. Please allow list it first');
+                await setUserClaims();
                 setCurrentUser(null);
                 return;
             }

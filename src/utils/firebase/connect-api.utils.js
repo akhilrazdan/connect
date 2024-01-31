@@ -1,3 +1,4 @@
+import { getIdTokenResult } from "./firebase.utils";
 import {
     getIdTokenBearer
 } from './firebase.utils'
@@ -97,6 +98,7 @@ export const setUserClaims = async () => {
                 'Authorization': `Bearer ${idToken}` // Include the ID token in the request headers
             }
         });
+        const refreshIdToken = await getIdTokenResult(true)
         if (response.ok) {
             // The request was successful, and the user exists
             return true;
