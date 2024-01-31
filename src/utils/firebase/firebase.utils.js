@@ -7,9 +7,10 @@ import {
     GoogleAuthProvider,
     signOut,
     onAuthStateChanged,
+    deleteUser
 } from 'firebase/auth'
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
-import { checkIfMenteeExists, createUser, getMentee } from './connect-api.utils';
+import { isUserAllowListed, createUser, getUser } from './connect-api.utils';
 
 console.log(`API_KEY: ${process.env.REACT_APP_API_KEY}\n
 ${process.env.REACT_APP_API_KEY}\n
@@ -38,7 +39,7 @@ googleProvider.setCustomParameters({
 
 export const getIdTokenResult = async (forceRefresh = false) => await getAuth().currentUser.getIdTokenResult(forceRefresh)
 export const getIdTokenBearer = async (forceRefresh = false) => await getAuth().currentUser.getIdToken(forceRefresh)
-
+export const deleteFirebaseUser = async (user) => deleteUser(user);
 export const auth = getAuth();
 export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
 
@@ -85,28 +86,4 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
     }
 
     return userDocRef;
-};
-// TODO(akhilz) Move to connect api 
-export const createUserUsingBackendApi = async (userAuth, additionalInformation = {}) => {
-
-    try {
-        const displayName = additionalInformation.displayName || userAuth.displayName;
-        const email = userAuth.email;
-        // If user does not exist, proceed with creating the user
-        const userDetails = await getMentee({});
-        if (!userDetails) {
-            const response = await createUser({ name: displayName, email })
-            console.log('newMentee:', JSON.stringify(response));
-            if (!response.error) {
-                // Handle successful user creation
-                return response.user;
-            } else {
-                // Handle errors or unsuccessful user creation
-                throw new Error(response.data);
-            }
-        }
-    } catch (error) {
-        console.error('Error in creating the mentee using backend API:', error)
-        throw error; // rethrow the error if you want to handle it outside this function
-    }
 };

@@ -1,6 +1,6 @@
 import { useState, useContext } from "react";
-import { createAuthUserWithEmailAndPassword, getIdTokenResult } from "../../utils/firebase/firebase.utils";
-import { setUserClaims, createUserUsingBackendApi } from "../../utils/firebase/connect-api.utils";
+import { createAuthUserWithEmailAndPassword, deleteFirebaseUser, getIdTokenResult } from "../../utils/firebase/firebase.utils";
+import { isUserAllowListed, createUserUsingBackendApi } from "../../utils/firebase/connect-api.utils";
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 import './sign-up-form.styles.scss';
@@ -18,42 +18,43 @@ const defaultFormFields = {
 const SignUpForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { displayName, email, password, confirmPassword } = formFields;
-    const { setRole } = useContext(UnifiedUserContext);
-    const navigate = useNavigate();
+    const { setRole, setCurrentUser } = useContext(UnifiedUserContext);
     const [error, setError] = useState('');
-
-    const checkUserRoleAndNavigate = (role) => {
-        if (role === 'mentee') {
-            console.log('mentee navigated')
-            navigate('/');
-        } else {
-            console.log('guest navigated')
-            navigate('/unauthorized', { replace: true });
-        }
-    }
-
+    const [loading, setLoading] = useState(false);
     const resetFormFields = () => {
         setFormFields(defaultFormFields);
-
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (password !== confirmPassword) {
-            setError("Passwords do not match");
-            return;
-        }
+
 
         try {
+            setError('')
+            if (password !== confirmPassword) {
+                setError("Passwords do not match");
+                return;
+            }
+            setLoading(true);
             const { user } = await createAuthUserWithEmailAndPassword(email, password);
-            console.log(`Signup Form user ${JSON.stringify(user)} ${displayName}`);
-            await setUserClaims();
+            console.log(`Signed Up user ${JSON.stringify(user)} ${displayName}`);
+            const isUserAllowed = await isUserAllowListed();
+
+            if (!isUserAllowed) {
+                setError('User is not allowed to sign up. Please allow list it first');
+                await deleteFirebaseUser(user);
+                setCurrentUser(null);
+                console.log(`Setting role to null`)
+                setRole(null);
+                return;
+            }
+
             await createUserUsingBackendApi(user, { displayName });
             const idTokenResult = await getIdTokenResult(true);
-            console.log(`idTokenResult after sign in ${idTokenResult}, role ${idTokenResult.claims.role}`)
-            setRole(idTokenResult.claims.role);
-            checkUserRoleAndNavigate(idTokenResult.claims.role);
+            console.log(`Setting role from ${role} to ${idTokenResult.claims.role}`)
+            setRole(idTokenResult.claims?.role ?? 'guest')
+            setCurrentUser(user);
             resetFormFields();
         } catch (error) {
             // Check if the error message starts with "Firebase:" and remove it
@@ -66,6 +67,8 @@ const SignUpForm = () => {
             } else {
                 setError(`Error creating user: ${errorMessage}`);
             }
+        } finally {
+            setLoading(false)
         }
 
     }
@@ -89,7 +92,7 @@ const SignUpForm = () => {
 
                 <FormInput label="Confirm Password" required type="password" onChange={handleChange} name="confirmPassword" value={confirmPassword} />
 
-                <Button buttonType='button' type="submit">Sign Up</Button>
+                <Button buttonType='button' type="submit" loading={loading}>Sign Up</Button>
             </form>
             {error && <p className="error-message">{error}</p>}
         </div>

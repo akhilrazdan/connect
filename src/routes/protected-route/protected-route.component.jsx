@@ -3,9 +3,10 @@ import { Navigate } from 'react-router-dom';
 import { UnifiedUserContext } from "../../contexts/unified-user.context";
 
 const ProtectedRoute = ({ element: Component, roles, ...rest }) => {
-    const { currentUser, role } = useContext(UnifiedUserContext);
+    const { isMenteeLoggedIn, role } = useContext(UnifiedUserContext);
+    console.log("ProtectedRoute rendering for path: ", rest.path);
 
-    if (!currentUser) {
+    if (!isMenteeLoggedIn) {
         console.log(`Protected: User is not authenticated, redirect to the auth page`)
         return <Navigate to="/auth" />;
     }

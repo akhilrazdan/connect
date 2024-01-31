@@ -8,15 +8,7 @@ import { UnifiedUserContext } from "../../contexts/unified-user.context";
 import './authentication.styles.scss';
 
 const Authentication = () => {
-    const navigate = useNavigate();
-    const { currentUser } = useContext(UnifiedUserContext);
     const [formToShow, setFormToShow] = useState('signIn'); // 'signIn' or 'signUp'
-
-    useEffect(() => {
-        if (currentUser) {
-            navigate('/');
-        }
-    }, [currentUser, navigate]);
 
     return (
         <div className="authentication-container">

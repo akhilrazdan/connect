@@ -28,15 +28,16 @@ export const createUser = async ({ name, email }) => {
             // The request was unsuccessful, log the status and return an error object
             console.error('Failed to create user. Status:', response.status);
             const errorData = await response.json();
-            return { error: true, status: response.status, data: errorData };
+            throw Error(errorData)
         }
     } catch (error) {
         // Handle network or other unexpected errors
         console.error('An error occurred while creating the user:', error);
-        return { error: true, message: error.message };
+        throw Error(error.message)
+
     }
 };
-export const getMentee = async ({ }) => {
+export const getUser = async ({ }) => {
     console.log(`Backend : ${BACKEND_URL}`)
     try {
         const idToken = await getIdTokenBearer();
@@ -45,7 +46,7 @@ export const getMentee = async ({ }) => {
                 'Authorization': `Bearer ${idToken}` // Include the ID token in the request headers
             }
         });
-        console.log(`Calling getMentee ${idToken} ${response.ok}`);
+        console.log(`Calling getUser ${idToken} ${response.ok}`);
         if (response.ok) {
             // The request was successful, and the user exists
             const userDetails = await response.json()
@@ -71,10 +72,11 @@ export const getMentee = async ({ }) => {
 export const createUserUsingBackendApi = async (userAuth, additionalInformation = {}) => {
 
     try {
+        await setUserClaims()
         const displayName = additionalInformation.displayName || userAuth.displayName;
         const email = userAuth.email;
         // If user does not exist, proceed with creating the user
-        const userDetails = await getMentee({});
+        const userDetails = await getUser({});
         if (!userDetails) {
             const response = await createUser({ name: displayName, email })
             return response;
@@ -112,19 +114,19 @@ export const setUserClaims = async () => {
     }
 }
 
-export const checkIfMenteeExists = async ({ uid }) => {
+export const isUserAllowListed = async () => {
     try {
         const idToken = await getIdTokenBearer();
-        const response = await fetch(`${BACKEND_URL}/user`, {
+        const response = await fetch(`${BACKEND_URL}/allowed`, {
             headers: {
                 'Authorization': `Bearer ${idToken}` // Include the ID token in the request headers
             }
         });
-        console.log(`Calling checkIfMenteeExists ${uid} ${response.ok}`);
         if (response.ok) {
             // The request was successful, and the user exists
             return true;
         } else if (response.status === 404) {
+            console.log(`isUserAllowListed : ${response.status}`)
             // The request was unsuccessful, and the user does not exist
             return false;
         } else {

@@ -5,10 +5,11 @@ import { useContext } from 'react';
 import { MentorsProvider } from './contexts/mentors.context';
 
 const AppWrapper = () => {
-    const { role } = useContext(UnifiedUserContext);
-    console.log(`Reloading app because role changed to ${role}`)
+    const { isMenteeLoggedIn } = useContext(UnifiedUserContext);
+    console.log(`Reloading AppWrapper based on menteeLoggedIn ${isMenteeLoggedIn})
+}`)
     return (
-        role === 'mentee' ? (
+        isMenteeLoggedIn ? (
             <MentorsProvider>
                 <App />
             </MentorsProvider>

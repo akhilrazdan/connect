@@ -13,7 +13,7 @@ export const MentorsContext = createContext({
 });
 
 export const MentorsProvider = ({ children }) => {
-    const { role } = useContext(UnifiedUserContext);
+    const { isMenteeLoggedIn } = useContext(UnifiedUserContext);
 
     const [mentorsGroupedByIaf, setMentorsGroupedByIaf] = useState({});
     const [signupsTotal, setSignupsTotal] = useState(0);
@@ -67,18 +67,18 @@ export const MentorsProvider = ({ children }) => {
 
         // Cleanup when the component unmounts or before the effect runs again
         return resetMentorsContext;
-    }, [role]);
+    }, [isMenteeLoggedIn]);
 
     useEffect(() => {
         // Fetch mentors if a new user signs in and the role is 'mentee'
-        if (role === 'mentee') {
-            console.log(`Refreshing mentor context because role changed to ${role}`);
+        if (isMenteeLoggedIn) {
+            console.log(`Refreshing mentor context`);
             refreshMentors();
         } else {
             // Explicitly call the reset function when the role is not 'mentee'
             resetMentorsContext();
         }
-    }, [role]); // Run this effect when `role` changes
+    }, [isMenteeLoggedIn]); // Run this effect when `role` changes
 
 
     const value = { refreshMentors, mentorsGroupedByIaf, signupsTotal, maxMenteeChoices, choicesRemaining };

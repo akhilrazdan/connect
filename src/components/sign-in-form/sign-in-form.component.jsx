@@ -6,9 +6,10 @@ import {
 } from "../../utils/firebase/firebase.utils";
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
-import { setUserClaims, createUserUsingBackendApi } from "../../utils/firebase/connect-api.utils";
+import { setUserClaims } from "../../utils/firebase/connect-api.utils";
 import { UnifiedUserContext } from "../../contexts/unified-user.context";
 import { useNavigate } from "react-router-dom";
+import { isUserAllowListed, createUserUsingBackendApi } from "../../utils/firebase/connect-api.utils";
 import './sign-in-form.styles.scss';
 
 const defaultFormFields = {
@@ -20,55 +21,66 @@ const defaultFormFields = {
 const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { email, password } = formFields;
-    const { loading, setSignInProcessComplete, setRole } = useContext(UnifiedUserContext);
+    const { currentUser, setCurrentUser, setRole } = useContext(UnifiedUserContext);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const navigate = useNavigate();
 
-    const checkUserRoleAndNavigate = (role) => {
-        if (role === 'mentee') {
-            console.log('mentee navigated')
-            navigate('/');
-        } else {
-            console.log('guest navigated')
-            navigate('/unauthorized', { replace: true });
-        }
-    }
     const resetFormFields = () => {
+        setError('')
         setFormFields(defaultFormFields);
     }
 
     const signInWithGoogle = async () => {
-        const { user } = await signInWithGooglePopup();
-        try {
+        setLoading(true); // Start loading
+        setError('');
 
-            await setUserClaims();
-            const response = await createUserUsingBackendApi(user)
+        try {
+            const { user } = await signInWithGooglePopup();
+            const isUserAllowed = await isUserAllowListed();
+
+            if (!isUserAllowed) {
+                setError('User is not allowed to sign in. Please allow list it first');
+                setCurrentUser(null);
+                return;
+            }
+            await createUserUsingBackendApi(user);
             const idTokenResult = await getIdTokenResult(true);
-            console.log(`idTokenResult after sign in ${idTokenResult}, role ${idTokenResult.claims.role}`)
-            setRole(idTokenResult.claims.role);
-            checkUserRoleAndNavigate(idTokenResult.claims.role);
-            setSignInProcessComplete(true);
+            console.log(`Setting user claims idTokenResult ${JSON.stringify(idTokenResult)}, role ${idTokenResult.claims.role}`)
+            setRole(idTokenResult.claims?.role ?? 'guest');
+            setCurrentUser({ ...user, role: idTokenResult.claims?.role ?? 'guest' });
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {
                 setError("Cannot create user, email already in use");
             } else {
+                console.log(`Error ${error}`)
                 setError("Error signing in: ", error.message);
             }
+        } finally {
+            setLoading(false); // Stop loading
         }
     }
 
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setLoading(true);
 
         try {
             setError('')
             const { user } = await signInAuthUserWithEmailAndPassword(email, password)
+            const isUserAllowed = await isUserAllowListed();
+
+            if (!isUserAllowed) {
+                setError('User is not allowed to sign in. Please allow list it first');
+                setCurrentUser(null);
+                return;
+            }
+
             await setUserClaims();
             const idTokenResult = await getIdTokenResult(true);
-            console.log(`idTokenResult after sign in ${idTokenResult}, role ${idTokenResult.claims.role}`)
-            setRole(idTokenResult.claims.role);
-            checkUserRoleAndNavigate(idTokenResult.claims.role);
+            console.log(`Setting idTokenResult after sign in ${idTokenResult.claims?.role ?? 'guest'} ${idTokenResult}, role ${idTokenResult.claims.role}`)
+            setRole(idTokenResult.claims?.role ?? 'guest')
+            setCurrentUser({ ...user, role: idTokenResult.claims?.role ?? 'guest' });
             resetFormFields();
         } catch (error) {
             let errorMessage = error.message;
@@ -87,9 +99,9 @@ const SignInForm = () => {
                 default:
                     setError(errorMessage);
             }
+        } finally {
+            setLoading(false)
         }
-
-
     }
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -108,10 +120,10 @@ const SignInForm = () => {
                 <FormInput label="Password" required type="password" onChange={handleChange} name="password" value={password} />
                 <div className="buttons-container">
                     <Button type="submit" loading={loading}>Sign In</Button>
-                    <Button type='button' buttonType='google' onClick={signInWithGoogle}>Google sign in</Button>
+                    <Button type='button' buttonType='google' loading={loading} onClick={signInWithGoogle}>Google sign in</Button>
                 </div>
             </form>
-            {error && <p className="error-message">{error}</p>}
+            {(error) && <p className="error-message">{error}</p>}
         </div>
 
     )
