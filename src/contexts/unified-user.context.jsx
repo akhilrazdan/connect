@@ -30,6 +30,22 @@ export const UnifiedUserProvider = ({ children }) => {
         }
     }, [isMenteeLoggedIn])
     useEffect(() => {
+        const refreshUserClaims = async () => {
+            const user = auth.currentUser;
+
+            if (user) {
+                await user.getIdToken(true); // Force a token refresh
+                const idTokenResult = await getIdTokenResult(user);
+
+                // Use the claims from idTokenResult for your application logic
+                console.log(`Setting role from ${role} to ${idTokenResult.claims.role}`)
+                setRole(idTokenResult.claims.role);
+
+                // If you need to update the user object in your state, 
+                // consider augmenting it with the new claims
+                setCurrentUser({ ...user, role: idTokenResult.claims.role });
+            }
+        };
         console.log(`useEffect triggered ${JSON.stringify(currentUser)}, ${role}`);
         if (currentUser && role === 'mentee') {
             setMenteeLoggedIn(true);
@@ -40,28 +56,11 @@ export const UnifiedUserProvider = ({ children }) => {
         }
     }, [role, currentUser]);
 
-    const refreshUserClaims = async () => {
-        const user = auth.currentUser;
-
-        if (user) {
-            await user.getIdToken(true); // Force a token refresh
-            const idTokenResult = await getIdTokenResult(user);
-
-            // Use the claims from idTokenResult for your application logic
-            console.log(`Setting role from ${role} to ${idTokenResult.claims.role}`)
-            setRole(idTokenResult.claims.role);
-
-            // If you need to update the user object in your state, 
-            // consider augmenting it with the new claims
-            setCurrentUser({ ...user, role: idTokenResult.claims.role });
-        }
-    };
     useEffect(() => {
         const unsubscribe = onAuthStateChangedListener(async (user) => {
             console.log(`Current user changed to ${JSON.stringify(user)}`)
             if (user) {
                 setIsInitialLogin(true); // Set flag on user login
-                await refreshUserClaims()
             } else {
                 // Reset state when user signs out
                 setCurrentUser(null);
