@@ -52,7 +52,6 @@ const SignUpForm = () => {
 
             await createUserUsingBackendApi(user, { displayName });
             const idTokenResult = await getIdTokenResult(true);
-            console.log(`Setting role from ${role} to ${idTokenResult.claims.role}`)
             setRole(idTokenResult.claims?.role ?? 'guest')
             setCurrentUser(user);
             resetFormFields();
