@@ -1,15 +1,15 @@
 .navigation {
-  height: 70px;
+  height: 4em;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-shadow: rgba(0, 0, 0, 0.75) 0px 5px 8px -9px;
-  margin-bottom: 25px;
 
   .logo-container {
     height: 100%;
     width: 70px;
+    margin-right: 4em;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -33,7 +33,6 @@
     padding: 10px;
     padding-bottom: 20px;
     /* Adjust as needed */
-    margin-bottom: -20px;
     border-bottom: 4px solid transparent;
 
   }
@@ -42,49 +41,51 @@
     font-family: 'Open Sans';
     font-weight: bold;
 
-    padding-left: 18em;
     /* Adjust as needed */
     display: flex;
     align-items: center;
+    justify-content: flex-start;
+
   }
 
   .nav-links-container {
     width: 100%;
     height: 100%;
+    max-width: 1200px;
+    margin: auto;
+    padding: 0 1em;
     display: flex;
     justify-content: space-between;
 
-
-    .active {
-      border-bottom: 4px solid orange !important;
-      /* Adjust color as needed */
-      display: inline-block;
-      /* Light and subtle */
-      /* Example: blue underline */
-      /* other styles for active link */
-    }
-
     .nav-link {
-      padding: 10px;
-      padding-bottom: 20px;
-      /* Adjust as needed */
-      margin-bottom: -20px;
-      /* Negative margin to bring the border closer to the shadow */
-      cursor: pointer;
-      border-bottom: 4px solid transparent;
+      position: relative; // Set relative positioning for the nav-link
+      display: flex;
+      align-items: center; // Ensures vertical centering of the text
+      height: 100%; // Match the height of the navigation bar
+      /* ... other nav-link styles ... */
 
-      /* Invisible border for all links */
-      /* Transparent border by default */
+      &.active::after {
+        content: ''; // Necessary for the pseudo-element to work
+        position: absolute; // Position absolutely within the nav-link
+        bottom: -4px; // Position the border below the nav-link
+        left: 0;
+        width: 100%; // Span the entire width of the nav-link
+        border-bottom: 4px solid orange !important; // Your active border
+      }
     }
+
 
     .nav-link.home {
-      padding-right: 20px;
+      padding-right: 1em;
+      padding-left: 1em;
       /* Adjust the value as needed */
     }
 
     /* Or, add padding to the left of the "FAQ" link */
     .nav-link.faq {
-      padding-left: 20px;
+      padding-left: 1em;
+      padding-right: 1em;
+
       /* Adjust the value as needed */
     }
 
