@@ -7,7 +7,7 @@ const Faq = () => {
             <div className="faq-content">
                 <div className="question">How does this work?</div>
                 <p>
-                    You can view the Mentors under the Industry Areas of Focus for your “track”
+                    You can view the mentors under the Industry Areas of Focus for your "track".
                     As a reminder, the three tracks are:
                 </p>
 
@@ -24,7 +24,7 @@ const Faq = () => {
 
                 <div className='question'>Why can’t I click on a Mentor?</div>
                 <p>
-                    If your Mentor is tagged "List Full", this means that their mentee intake list is full. If you are interested in speaking with a mentor, contact mentorship@batonnageforum.com to get added to a waitlist. We cannot guarantee that you will be connected with the mentor as this is decided on a case by case basis and mentor availability.
+                    If your Mentor is tagged "List Full", this means that their mentee intake list is full. If you are interested in speaking with a mentor, contact  <span className='email'>mentorship@batonnageforum.com</span> to get added to a waitlist. We cannot guarantee that you will be connected with the mentor as this is decided on a case by case basis and mentor availability.
                     <br />
                     In case of any other errors, try refreshing your browser. We recommend that you use Google Chrome for optimal functionality. It is preferred that you use a desktop for better reads instead of a phone/tablet.
                 </p>
