@@ -39,7 +39,7 @@ const SignInForm = () => {
             const isUserAllowed = await isUserAllowListed();
 
             if (!isUserAllowed) {
-                setError('User is not allowed to sign in. Please allow list it first');
+                setError('Have you registered this email with us yet? Email mentorship@batonnageforum.com to add it to the allow list');
                 setCurrentUser(null);
                 return;
             }
@@ -71,7 +71,7 @@ const SignInForm = () => {
             const isUserAllowed = await isUserAllowListed();
 
             if (!isUserAllowed) {
-                setError('User is not allowed to sign in. Please allow list it first');
+                setError('Have you registered this email with us yet? Email mentorship@batonnageforum.com to add it to the allow list');
                 await setUserClaims();
                 setCurrentUser(null);
                 return;
@@ -112,20 +112,24 @@ const SignInForm = () => {
 
     return (
         <div className="sign-in-container">
-            <h2>Already have an account?</h2>
-            <span>Sign in with your email and password</span>
-            <form onSubmit={handleSubmit}>
+            <div className="sign-in-text">
+                <h2>Already have an account?</h2>
+                <span>Sign in with your email and password</span>
+                <form onSubmit={handleSubmit}>
 
-                <FormInput label="Email" required type="email" onChange={handleChange} name="email" value={email} />
+                    <FormInput label="Email" required type="email" onChange={handleChange} name="email" value={email} />
 
-                <FormInput label="Password" required type="password" onChange={handleChange} name="password" value={password} />
-                <div className="buttons-container">
-                    <Button type="submit" loading={loading}>Sign In</Button>
-                    <Button type='button' buttonType='google' loading={loading} onClick={signInWithGoogle}>Google sign in</Button>
-                </div>
-            </form>
-            {(error) && <p className="error-message">{error}</p>}
+                    <FormInput label="Password" required type="password" onChange={handleChange} name="password" value={password} />
+                    <div className="buttons-container">
+                        <Button type="submit" loading={loading}>Sign In</Button>
+                        <Button type='button' buttonType='google' loading={loading} onClick={signInWithGoogle}>Google sign in</Button>
+                    </div>
+                </form>
+                {(error) && <p className="error-message">{error}</p>}
+            </div>
+
         </div>
+
 
     )
 }

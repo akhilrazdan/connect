@@ -1,9 +1,6 @@
-
 import SignUpForm from "../sign-up-form/sign-up-form.component";
 import SignInForm from "../sign-in-form/sign-in-form.component";
-import { useNavigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import { UnifiedUserContext } from "../../contexts/unified-user.context";
+import { useState } from "react";
 
 import './authentication.styles.scss';
 
@@ -12,6 +9,7 @@ const Authentication = () => {
 
     return (
         <div className="authentication-container">
+            <img src='https://images.squarespace-cdn.com/content/5af37e4ca9e028636a580477/1600106491825-KJTT5XMGWCY6M4HJF48S/BatonnageLogo_Orange_Mentorship.png?content-type=image%2Fpng' />
             {formToShow === 'signIn' && <SignInForm />}
             {formToShow === 'signUp' && <SignUpForm />}
             <div className="switch-form">

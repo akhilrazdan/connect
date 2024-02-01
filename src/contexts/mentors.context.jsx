@@ -10,6 +10,7 @@ export const MentorsContext = createContext({
     signupsTotal: 0,
     maxMenteeChoices: 0,
     choicesRemaining: 0,
+    trackName: '',
 });
 
 export const MentorsProvider = ({ children }) => {
@@ -19,11 +20,12 @@ export const MentorsProvider = ({ children }) => {
     const [signupsTotal, setSignupsTotal] = useState(0);
     const [maxMenteeChoices, setMaxMenteeChoices] = useState(3)
     const [choicesRemaining, setChoicesRemaining] = useState(maxMenteeChoices - signupsTotal)
+    const [trackName, setTrackName] = useState('')
 
     const refreshMentors = async () => {
         console.log('Refreshing mentors')
         try {
-            const { mentors, signupsTotal, maxMenteeChoices } = await getMentorsForMentee({});
+            const { mentors, signupsTotal, maxMenteeChoices, trackName } = await getMentorsForMentee({});
             // group mentors into a map by iaf key
             const groupedMentors = mentors.reduce((accumulator, mentor) => {
                 // If the accumulator does not have the key for this 'iaf', create it
@@ -39,6 +41,7 @@ export const MentorsProvider = ({ children }) => {
             }, {}); // Initialize the accumulator as an empty object
             console.log('mentors', mentors);
             console.log('groupedMentors', groupedMentors);
+            setTrackName(trackName)
             setMentorsGroupedByIaf(groupedMentors);
             setSignupsTotal(signupsTotal);
             setMaxMenteeChoices(maxMenteeChoices);
@@ -81,7 +84,7 @@ export const MentorsProvider = ({ children }) => {
     }, [isMenteeLoggedIn]); // Run this effect when `role` changes
 
 
-    const value = { refreshMentors, mentorsGroupedByIaf, signupsTotal, maxMenteeChoices, choicesRemaining };
+    const value = { refreshMentors, mentorsGroupedByIaf, signupsTotal, maxMenteeChoices, choicesRemaining, trackName };
 
     return (
         <MentorsContext.Provider value={value}>

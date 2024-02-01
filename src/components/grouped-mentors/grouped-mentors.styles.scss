@@ -2,4 +2,74 @@
     padding: 20px 40px;
     max-width: 1200px;
     margin: auto;
+
+    .mentee-track-info {
+        display: flex;
+        align-items: center;
+        background-color: #ffffff; // Light background for subtlety
+        border: 1px solid #e0e0e0; // Soft border color
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+
+        .track-icon {
+            width: 40px;
+            height: 40px;
+            margin-right: 15px;
+            fill: #4a90e2; // Adjust color based on your preference
+        }
+
+        .track-details,
+        .choices-remaining {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            flex: 1;
+
+            h2 {
+                margin: 0 0 5px;
+                color: #333;
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            p {
+                margin: 0;
+                color: #555; // Slightly darker for readability
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+            // &.highlight {
+            //     animation: pulseEffect 3s;
+            //     border-color: #ff0000; // Red border for attention
+            // }
+        }
+
+        .choices-remaining.highlight {
+            animation: pulseEffect 1s 6; // Run the animation for 3 seconds
+        }
+
+        .track-details {
+            border-right: 1px solid #ddd;
+            padding-right: 20px;
+            margin-right: 20px;
+        }
+
+        // Further styling can be added as needed
+    }
+}
+
+@keyframes pulseEffect {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 0, 0, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+    }
 }

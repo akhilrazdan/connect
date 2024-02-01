@@ -1,6 +1,6 @@
 .authentication-container {
     width: 90%; // Responsive width, max-width to limit size on larger screens
-    max-width: 450px; // Adjust this value based on your design
+    max-width: 450px; // Adjust this value based on your de
     margin: auto; // Center horizontally
     padding: 40px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Optional: for subtle shadow
@@ -16,6 +16,11 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%); // Center vertically & horizontally
+
+    img {
+        width: 70%;
+        height: auto;
+    }
 
     .switch-form {
         margin-top: 20px; // Add some space above the switch section

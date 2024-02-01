@@ -4,7 +4,6 @@ import { isUserAllowListed, createUserUsingBackendApi } from "../../utils/fireba
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 import './sign-up-form.styles.scss';
-import { useNavigate } from "react-router-dom";
 import { UnifiedUserContext } from "../../contexts/unified-user.context";
 
 
@@ -28,8 +27,6 @@ const SignUpForm = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-
-
         try {
             setError('')
             if (password !== confirmPassword) {
@@ -42,7 +39,7 @@ const SignUpForm = () => {
             const isUserAllowed = await isUserAllowListed();
 
             if (!isUserAllowed) {
-                setError('User is not allowed to sign up. Please allow list it first');
+                setError('Have you registered this email with us yet? Email mentorship@batonnageforum.com to add it to the allow list');
                 await deleteFirebaseUser(user);
                 setCurrentUser(null);
                 console.log(`Setting role to null`)
@@ -80,6 +77,7 @@ const SignUpForm = () => {
 
     return (
         <div className="sign-up-container">
+
             <h2>Don't have an account?</h2>
             <span>Sign up with your email and password. </span>
             <form onSubmit={handleSubmit}>
