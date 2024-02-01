@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { onAuthStateChangedListener, getIdTokenResult, auth } from '../utils/firebase/firebase.utils';
-import { createUserUsingBackendApi, isUserAllowListed } from '../utils/firebase/connect-api.utils';
 import { useNavigate } from 'react-router-dom';
 
 export const UnifiedUserContext = createContext({

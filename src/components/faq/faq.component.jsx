@@ -8,18 +8,18 @@ const Faq = () => {
                 <div className="question">How does this work?</div>
                 <p>
                     You can view the Mentors under the Industry Areas of Focus for your “track”
-                    As a reminder, the three tracks are: </p>
+                    As a reminder, the three tracks are:
+                </p>
+
                 <p>
-                    <p>
-                        <b>Production Track:</b> Cellar/Production and Viticulture <br />
-                        <b>Sales Track:</b> Retail, Sales & Distribution, Hospitality<br />
-                        <b>Brand Management Track:</b> Marketing & Communications, Wine Business<br />
-                    </p>
-                    <p>
-                        You can select up to 3 mentors (minimum: 1, maximum 3) from your “track list”. Mentor selection is <b>FIRST COME, FIRST SERVE</b>. <br />
-                        Once you click on a mentor, your selection is FINAL.<br />
-                        In case of errors, please contact <span className='email'>mentorship@batonnageforum.com</span> <br />
-                    </p>
+                    <b>Production Track:</b> Cellar/Production and Viticulture <br />
+                    <b>Sales Track:</b> Retail, Sales & Distribution, Hospitality<br />
+                    <b>Brand Management Track:</b> Marketing & Communications, Wine Business<br />
+                </p>
+                <p>
+                    You can select up to 3 mentors (minimum: 1, maximum 3) from your “track list”. Mentor selection is <b>FIRST COME, FIRST SERVE</b>. <br />
+                    Once you click on a mentor, your selection is FINAL.<br />
+                    In case of errors, please contact <span className='email'>mentorship@batonnageforum.com</span> <br />
                 </p>
 
                 <div className='question'>Why can’t I click on a Mentor?</div>
@@ -33,8 +33,9 @@ const Faq = () => {
                 <p>
                     Click on the Mentor name to read their full bio. This will help you decide if they are a good match for you based on your current interests, skills, geographical location, etc.
                     For additional support, contact your IAF Head or Mentee Liaison Officer. Contact information is below:
-                </p>
-                <p>
+                    <br />
+                    <br />
+
                     <table>
                         <thead>
                             <tr>
@@ -84,6 +85,8 @@ const Faq = () => {
                         </tbody>
                     </table>
                 </p>
+
+
                 <div className='question'>How do I know which Mentors I am able to interact with?</div>
                 <p>You will receive email confirmations with your mentor final lists. Additionally you can log into the account on this platform to view your final mentor lists as well. This will be available on Feb 11th, 2024.</p>
                 <div className='question'>I forgot my login information, what do I do?</div>
@@ -95,7 +98,7 @@ const Faq = () => {
                     If you haven’t received any contact or communication from any Mentors by April 10th, 2024, please contact mentorship@batonnageforum.com. Additionally your IAF heads are also available to help connect you with your mentors as well.
                 </p>
 
-            </div>
+            </div >
         </div >
     );
 }

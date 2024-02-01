@@ -22,10 +22,10 @@ const Navigation = () => {
                         <Link className="logo-container" to='/'>
                             <img src={CrwnLogo} alt="Logo" className="logo-image" />
                         </Link>
-                        <NavLink to='/' className="nav-link home" activeClassName="active-link">
+                        <NavLink to='/' className={(navData) => (navData.isActive ? "nav-link home active" : 'nav-link home')}>
                             Home
                         </NavLink>
-                        <NavLink to='/faq' className="nav-link faq" activeClassName="active" >
+                        <NavLink to='/faq' className={(navData) => (navData.isActive ? "nav-link faq active" : 'nav-link faq')}>
                             FAQ
                         </NavLink>
                     </div>
@@ -40,7 +40,7 @@ const Navigation = () => {
                 </div>
             </div>
             <Outlet />
-        </Fragment>
+        </Fragment >
     )
 }
 
