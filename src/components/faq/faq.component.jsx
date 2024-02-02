@@ -59,6 +59,30 @@ const Faq = () => {
                                 <td>jkoga@schramsberg.com</td>
                             </tr>
                             <tr>
+                                <td>Sales/Distribution</td>
+                                <td>Anitha</td>
+                                <td>Gandhi</td>
+                                <td>anitha.gandhi@gmail.com</td>
+                            </tr>
+                            <tr>
+                                <td>Hospitality</td>
+                                <td>Liz</td>
+                                <td>Martinez</td>
+                                <td>lizwineacct@gmail.com</td>
+                            </tr>
+                            <tr>
+                                <td>Marketing/Communications</td>
+                                <td>Katie</td>
+                                <td>Canfield</td>
+                                <td>katie@odonnell-lane.com</td>
+                            </tr>
+                            <tr>
+                                <td>Viticulture</td>
+                                <td>Mary</td>
+                                <td>Maher</td>
+                                <td>mary@silveradofarming.com</td>
+                            </tr>
+                            <tr>
                                 <td>Wine Business</td>
                                 <td>Emily</td>
                                 <td>Porter</td>
