@@ -18,35 +18,18 @@ export const UnifiedUserProvider = ({ children }) => {
     const [role, setRole] = useState('guest');
     const [isMenteeLoggedIn, setMenteeLoggedIn] = useState(false);
     const navigate = useNavigate();
-    console.log("Running User provider with current user", currentUser, isMenteeLoggedIn)
-    // Handle changes in the 'role' state
     useEffect(() => {
         if (isMenteeLoggedIn) {
-            console.log("Redirecting")
+            console.log("Users: Redirecting to /")
             navigate('/')
         } else {
-            console.log(`useEffect based on isMenteeLoggedIn but not changing anything`)
+            console.log(`Users: useEffect based on isMenteeLoggedIn but not changing anything`)
         }
     }, [isMenteeLoggedIn])
     useEffect(() => {
-        const refreshUserClaims = async () => {
-            const user = auth.currentUser;
-
-            if (user) {
-                await user.getIdToken(true); // Force a token refresh
-                const idTokenResult = await getIdTokenResult(user);
-
-                // Use the claims from idTokenResult for your application logic
-                console.log(`Setting role from ${role} to ${idTokenResult.claims.role}`)
-                setRole(idTokenResult.claims.role);
-
-                // If you need to update the user object in your state, 
-                // consider augmenting it with the new claims
-                setCurrentUser({ ...user, role: idTokenResult.claims.role });
-            }
-        };
-        console.log(`useEffect triggered ${JSON.stringify(currentUser)}, ${role}`);
+        console.log(`Users: Recieved ${role} & ${JSON.stringify(currentUser)} `);
         if (currentUser && role === 'mentee') {
+            console.log(`Users: Setting isMenteeLoggedIn : true`);
             setMenteeLoggedIn(true);
             setIsInitialLogin(false); // Reset flag after navigating
         } else {
@@ -57,7 +40,7 @@ export const UnifiedUserProvider = ({ children }) => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChangedListener(async (user) => {
-            console.log(`Current user changed to ${JSON.stringify(user)}`)
+            console.log(`Users: Current user changed to ${JSON.stringify(user)}`)
             if (user) {
                 setIsInitialLogin(true); // Set flag on user login
                 const idTokenResult = await getIdTokenResult(true);

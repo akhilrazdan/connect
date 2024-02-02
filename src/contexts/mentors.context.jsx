@@ -23,7 +23,7 @@ export const MentorsProvider = ({ children }) => {
     const [trackName, setTrackName] = useState('')
 
     const refreshMentors = async () => {
-        console.log('Refreshing mentors')
+        console.log('Fetching mentors')
         try {
             const { mentors, signupsTotal, maxMenteeChoices, trackName } = await getMentorsForMentee({});
             // group mentors into a map by iaf key
@@ -50,38 +50,21 @@ export const MentorsProvider = ({ children }) => {
             console.error('Error fetching mentors:', error);
         }
     };
-    const resetMentorsContext = () => {
-        console.log(`Cleaning up mentor context because the user signed out or role changed.`);
-        setMentorsGroupedByIaf({});
-        setSignupsTotal(0);
-        setMaxMenteeChoices(3);
-        setChoicesRemaining(3); // Assuming 3 is the initial value for maxMenteeChoices
-    };
-
     useEffect(() => {
-        // Function to reset the mentors context state
+        // Fetch mentors if a new user signs in and the role is 'mentee'
         const resetMentorsContext = () => {
-            console.log(`Cleaning up mentor context because the user signed out or role changed.`);
+            console.log(`Cleaning up mentor context because the user signed out/logged in or role changed.`);
             setMentorsGroupedByIaf({});
             setSignupsTotal(0);
             setMaxMenteeChoices(3);
             setChoicesRemaining(3); // Assuming 3 is the initial value for maxMenteeChoices
         };
-
-        // Cleanup when the component unmounts or before the effect runs again
+        if (isMenteeLoggedIn) {
+            console.log(`Fetching mentors because a mentee logged in`);
+            refreshMentors();
+        }
         return resetMentorsContext;
     }, [isMenteeLoggedIn]);
-
-    useEffect(() => {
-        // Fetch mentors if a new user signs in and the role is 'mentee'
-        if (isMenteeLoggedIn) {
-            console.log(`Refreshing mentor context`);
-            refreshMentors();
-        } else {
-            // Explicitly call the reset function when the role is not 'mentee'
-            resetMentorsContext();
-        }
-    }, [isMenteeLoggedIn]); // Run this effect when `role` changes
 
 
     const value = { refreshMentors, mentorsGroupedByIaf, signupsTotal, maxMenteeChoices, choicesRemaining, trackName };
