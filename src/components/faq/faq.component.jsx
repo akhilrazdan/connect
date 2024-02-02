@@ -89,9 +89,6 @@ const Faq = () => {
 
                 <div className='question'>How do I know which Mentors I am able to interact with?</div>
                 <p>You will receive email confirmations with your mentor final lists. Additionally you can log into the account on this platform to view your final mentor lists as well. This will be available on Feb 11th, 2024.</p>
-                <div className='question'>I forgot my login information, what do I do?</div>
-                <p>Unfortunately, we don’t have the "Forgot Password" option available yet. Please contact <span className='email'>mentorship@batonnageforum.com</span> for next steps for your account information.</p>
-
 
                 <div className='question'>I haven’t heard from my Mentor, what do I do?</div>
                 <p>
