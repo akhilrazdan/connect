@@ -76,9 +76,11 @@ export const createUserUsingBackendApi = async (userAuth, additionalInformation 
         await setUserClaims()
         const displayName = additionalInformation.displayName || userAuth.displayName;
         const email = userAuth.email;
+        console.log(`Creating user account with ${userAuth.email}`)
         // If user does not exist, proceed with creating the user
         const userDetails = await getUser({});
         if (!userDetails) {
+            console.log(`User details do not exist ${email} ${displayName}`)
             const response = await createUser({ name: displayName, email })
             return response;
         }

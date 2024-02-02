@@ -76,6 +76,7 @@ const SignInForm = () => {
                 setCurrentUser(null);
                 return;
             }
+            console.log("Maybe create an account")
             await createUserUsingBackendApi(user);
             const idTokenResult = await getIdTokenResult(true);
             console.log(`Setting idTokenResult after sign in ${idTokenResult.claims?.role ?? 'guest'} ${idTokenResult}, role ${idTokenResult.claims.role}`)
