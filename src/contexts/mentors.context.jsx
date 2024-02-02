@@ -50,6 +50,7 @@ export const MentorsProvider = ({ children }) => {
             console.error('Error fetching mentors:', error);
         }
     };
+
     useEffect(() => {
         // Fetch mentors if a new user signs in and the role is 'mentee'
         const resetMentorsContext = () => {

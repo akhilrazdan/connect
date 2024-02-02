@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { onAuthStateChangedListener, getIdTokenResult, auth } from '../utils/firebase/firebase.utils';
 import { useNavigate } from 'react-router-dom';
+import { createUserUsingBackendApi } from '../utils/firebase/connect-api.utils';
 
 export const UnifiedUserContext = createContext({
     currentUser: null,
@@ -27,11 +28,15 @@ export const UnifiedUserProvider = ({ children }) => {
         }
     }, [isMenteeLoggedIn])
     useEffect(() => {
-        console.log(`Users: Recieved ${role} & ${JSON.stringify(currentUser)} `);
-        if (currentUser && role === 'mentee') {
-            console.log(`Users: Setting isMenteeLoggedIn : true`);
+        const createUser = async (user) => {
+            await createUserUsingBackendApi(user);
+            console.log(`Users: Maybe created user isMenteeLoggedIn : true`);
             setMenteeLoggedIn(true);
             setIsInitialLogin(false); // Reset flag after navigating
+        }
+        console.log(`Users: Recieved ${role} & ${JSON.stringify(currentUser)} `);
+        if (currentUser && role === 'mentee') {
+            createUser(currentUser);
         } else {
             setMenteeLoggedIn(false);
             // You may add additional logic here if needed when the role changes
@@ -43,8 +48,8 @@ export const UnifiedUserProvider = ({ children }) => {
             console.log(`Users: Current user changed to ${JSON.stringify(user)}`)
             if (user) {
                 setIsInitialLogin(true); // Set flag on user login
+
                 const idTokenResult = await getIdTokenResult(true);
-                // Use the claims from idTokenResult for your application logic
                 console.log(`Setting role from ${role} to ${idTokenResult.claims.role}`)
                 setRole(idTokenResult.claims.role);
                 // If you need to update the user object in your state, 
