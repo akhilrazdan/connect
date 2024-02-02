@@ -6,8 +6,7 @@ import { MentorsProvider } from './contexts/mentors.context';
 
 const AppWrapper = () => {
     const { isMenteeLoggedIn } = useContext(UnifiedUserContext);
-    console.log(`Reloading AppWrapper based on menteeLoggedIn ${isMenteeLoggedIn})
-}`)
+    console.log(`Reloading AppWrapper based on menteeLoggedIn ${isMenteeLoggedIn}`)
     return (
         isMenteeLoggedIn ? (
             <MentorsProvider>

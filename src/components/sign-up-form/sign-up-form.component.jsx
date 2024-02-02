@@ -39,7 +39,7 @@ const SignUpForm = () => {
             const isUserAllowed = await isUserAllowListed();
 
             if (!isUserAllowed) {
-                setError('Have you registered this email with us yet? Email mentorship@batonnageforum.com to add it to the allow list');
+                setError('Your email is not authorized for the mentorship program per our records. Email mentorship@batonnageforum.com for further clarification');
                 await deleteFirebaseUser(user);
                 setCurrentUser(null);
                 console.log(`Setting role to null`)

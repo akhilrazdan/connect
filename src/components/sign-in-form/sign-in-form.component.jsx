@@ -8,8 +8,8 @@ import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 import { setUserClaims } from "../../utils/firebase/connect-api.utils";
 import { UnifiedUserContext } from "../../contexts/unified-user.context";
-import { useNavigate } from "react-router-dom";
 import { isUserAllowListed, createUserUsingBackendApi } from "../../utils/firebase/connect-api.utils";
+import ForgotPassword from "../forgot-password/forgot-password.component";
 import './sign-in-form.styles.scss';
 
 const defaultFormFields = {
@@ -71,7 +71,7 @@ const SignInForm = () => {
             const isUserAllowed = await isUserAllowListed();
 
             if (!isUserAllowed) {
-                setError('Have you registered this email with us yet? Email mentorship@batonnageforum.com to add it to the allow list');
+                setError('Your email is not authorized for the mentorship program per our records. Email mentorship@batonnageforum.com for further clarification.');
                 await setUserClaims();
                 setCurrentUser(null);
                 return;
@@ -89,6 +89,9 @@ const SignInForm = () => {
                 errorMessage = error.message.substring("Firebase: ".length).trim();
             }
             switch (error.code) {
+                case 'auth/invalid-credential':
+                    setError('Invalid credentials. ')
+                    break;
                 case 'auth/wrong-password':
                     setError('Incorrect password for email');
                     break;

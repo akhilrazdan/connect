@@ -7,7 +7,8 @@ import {
     GoogleAuthProvider,
     signOut,
     onAuthStateChanged,
-    deleteUser
+    deleteUser,
+    sendPasswordResetEmail
 } from 'firebase/auth'
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
 import { isUserAllowListed, createUser, getUser } from './connect-api.utils';
@@ -56,6 +57,8 @@ export const signInWithUserWithEmailAndPassword = async (email, password) => {
 };
 
 export const signOutUser = async () => await signOut(auth);
+
+export const sendForgotPasswordEmail = async (email) => sendPasswordResetEmail(auth, email);
 
 export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback);
 
