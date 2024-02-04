@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { onAuthStateChangedListener, getIdTokenResult, auth } from '../utils/firebase/firebase.utils';
+import { createUser, createUserUsingBackendApi, getUser } from '../utils/firebase/connect-api.utils';
 import { useNavigate } from 'react-router-dom';
-import { createUserUsingBackendApi } from '../utils/firebase/connect-api.utils';
 
 export const UnifiedUserContext = createContext({
     currentUser: null,
@@ -10,63 +10,63 @@ export const UnifiedUserContext = createContext({
     setRole: () => { },
     isMenteeLoggedIn: false,
     setMenteeLoggedIn: () => { },
+    createUserFunction: null,
+    setCreateUserFunction: () => { },
     // Other state setters as needed
 });
 
 export const UnifiedUserProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
-    const [isInitialLogin, setIsInitialLogin] = useState(false); // New state
     const [role, setRole] = useState('guest');
     const [isMenteeLoggedIn, setMenteeLoggedIn] = useState(false);
+    const [createUserFunction, setCreateUserFunction] = useState(null);
     const navigate = useNavigate();
     useEffect(() => {
+        console.log(`Users: useEffect based on isMenteeLoggedIn ${isMenteeLoggedIn}`)
         if (isMenteeLoggedIn) {
             console.log("Users: Redirecting to /")
             navigate('/')
         } else {
+            navigate('/unauthorized')
             console.log(`Users: useEffect based on isMenteeLoggedIn but not changing anything`)
         }
     }, [isMenteeLoggedIn])
+
     useEffect(() => {
-        const createUser = async (user) => {
-            await createUserUsingBackendApi(user);
-            console.log(`Users: Maybe created user isMenteeLoggedIn : true`);
-            setMenteeLoggedIn(true);
-            setIsInitialLogin(false); // Reset flag after navigating
+        if (currentUser && role == 'mentee') {
+            setMenteeLoggedIn(true)
+        } else if (currentUser && role == 'guest') {
+            console.log(`Navigating to /unauthorized`)
+            navigate('/unauthorized')
         }
-        console.log(`Users: Recieved ${role} & ${JSON.stringify(currentUser)} `);
-        if (currentUser && role === 'mentee') {
-            createUser(currentUser);
-        } else {
-            setMenteeLoggedIn(false);
-            // You may add additional logic here if needed when the role changes
-        }
-    }, [role, currentUser]);
+    }, [currentUser, role])
 
     useEffect(() => {
         const unsubscribe = onAuthStateChangedListener(async (user) => {
             console.log(`Users: Current user changed to ${JSON.stringify(user)}`)
             if (user) {
-                setIsInitialLogin(true); // Set flag on user login
-
-                const idTokenResult = await getIdTokenResult(true);
-                console.log(`Setting role from ${role} to ${idTokenResult.claims.role}`)
-                setRole(idTokenResult.claims.role);
-                // If you need to update the user object in your state, 
-                // consider augmenting it with the new claims
-                setCurrentUser({ ...user, role: idTokenResult.claims.role });
+                const userDetails = await getUser()
+                if (userDetails) {
+                    if (userDetails.role_name) {
+                        console.log(`Users: Setting role for ${userDetails.uid} to ${userDetails.role_name ?? 'guest'}`)
+                        setRole(userDetails.role_name ?? 'guest')
+                    }
+                    const updatedUser = { ...user, role: role };
+                    setCurrentUser(updatedUser);
+                } else {
+                    console.log(`User: No user details found for ${user.uid}. This can happen when you are in the middle of user creation. Skipping...`)
+                }
             } else {
                 // Reset state when user signs out
                 setCurrentUser(null);
-                console.log(`Setting role from ${role} to null}`)
+                console.log(`Setting role from ${role} to null`)
                 setRole(null);
-                setIsInitialLogin(false); // Reset flag after navigating
                 setMenteeLoggedIn(false);
             }
         });
         return unsubscribe;
     }, []);
 
-    const value = { currentUser, setCurrentUser, role, setRole, isMenteeLoggedIn };
+    const value = { currentUser, setCurrentUser, role, setRole, createUserFunction };
     return <UnifiedUserContext.Provider value={value}>{children}</UnifiedUserContext.Provider>;
 };

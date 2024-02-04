@@ -1,5 +1,5 @@
-import { useState, useContext } from "react";
-import { createAuthUserWithEmailAndPassword, deleteFirebaseUser, getIdTokenResult } from "../../utils/firebase/firebase.utils";
+import { useState, useContext, useEffect } from "react";
+import { createAuthUserWithEmailAndPassword, deleteFirebaseUser, getIdTokenResult, signOutUser } from "../../utils/firebase/firebase.utils";
 import { isUserAllowListed, createUserUsingBackendApi } from "../../utils/firebase/connect-api.utils";
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
@@ -35,22 +35,10 @@ const SignUpForm = () => {
             }
             setLoading(true);
             const { user } = await createAuthUserWithEmailAndPassword(email, password);
-            console.log(`Signed Up user ${JSON.stringify(user)} ${displayName}`);
-            const isUserAllowed = await isUserAllowListed();
-
-            if (!isUserAllowed) {
-                setError('Your email is not authorized for the mentorship program per our records. Email mentorship@batonnageforum.com for further clarification');
-                await deleteFirebaseUser(user);
-                setCurrentUser(null);
-                console.log(`Setting role to null`)
-                setRole(null);
-                return;
-            }
-
-            await createUserUsingBackendApi(user, { displayName });
-            const idTokenResult = await getIdTokenResult(true);
-            setRole(idTokenResult.claims?.role ?? 'guest')
+            const userDetails = await createUserUsingBackendApi(user, { displayName })
+            console.log(`Setting currentUser to ${JSON.stringify(user)} and role to ${userDetails.role_name}`)
             setCurrentUser(user);
+            setRole(userDetails.role_name);
             resetFormFields();
         } catch (error) {
             // Check if the error message starts with "Firebase:" and remove it

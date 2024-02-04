@@ -14,7 +14,7 @@ export const MentorsContext = createContext({
 });
 
 export const MentorsProvider = ({ children }) => {
-    const { isMenteeLoggedIn } = useContext(UnifiedUserContext);
+    const { role } = useContext(UnifiedUserContext);
 
     const [mentorsGroupedByIaf, setMentorsGroupedByIaf] = useState({});
     const [signupsTotal, setSignupsTotal] = useState(0);
@@ -60,12 +60,12 @@ export const MentorsProvider = ({ children }) => {
             setMaxMenteeChoices(3);
             setChoicesRemaining(3); // Assuming 3 is the initial value for maxMenteeChoices
         };
-        if (isMenteeLoggedIn) {
+        if (role == 'mentee') {
             console.log(`Fetching mentors because a mentee logged in`);
             refreshMentors();
         }
         return resetMentorsContext;
-    }, [isMenteeLoggedIn]);
+    }, [role]);
 
 
     const value = { refreshMentors, mentorsGroupedByIaf, signupsTotal, maxMenteeChoices, choicesRemaining, trackName };

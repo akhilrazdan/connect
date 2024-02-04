@@ -10,14 +10,12 @@ const App = () => {
   console.log("Loading App.js")
   return (
     <Routes>
-      {/* <Route path='/' element={<ProtectedRoute element={Navigation} roles={['guest', 'mentee']} />}> */}
       <Route path='/' element={<Navigation />}>
         <Route index element={<ProtectedRoute element={GroupedMentors} roles={['mentee']} />} />
         <Route path='/faq' element={<ProtectedRoute element={Faq} roles={['guest', 'mentee']} />} />
         <Route path='/unauthorized' element={<ProtectedRoute element={Unauthorized} roles={['guest']} />} />
       </Route>
       <Route path='/auth' element={<Authentication />} />
-      {/* ... other routes */}
     </Routes>
   );
 };

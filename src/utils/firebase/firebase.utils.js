@@ -13,13 +13,7 @@ import {
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
 import { isUserAllowListed, createUser, getUser } from './connect-api.utils';
 
-console.log(`API_KEY: ${process.env.REACT_APP_API_KEY}\n
-${process.env.REACT_APP_API_KEY}\n
-${process.env.REACT_APP_AUTH_DOMAIN}\n
-${process.env.REACT_APP_PROJECT_ID}\n
-${process.env.REACT_APP_STORAGE_BUCKET}\n
-${process.env.REACT_APP_MESSAGING_SENDER_ID}\n
-${process.env.REACT_APP_APP_ID}`)
+console.log(`API_KEY: ${process.env.REACT_APP_API_KEY}, ${process.env.REACT_APP_API_KEY}, ${process.env.REACT_APP_AUTH_DOMAIN}, ${process.env.REACT_APP_PROJECT_ID},${process.env.REACT_APP_STORAGE_BUCKET}, ${process.env.REACT_APP_MESSAGING_SENDER_ID}, ${process.env.REACT_APP_APP_ID}`)
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_API_KEY,
     authDomain: process.env.REACT_APP_AUTH_DOMAIN,
@@ -40,8 +34,11 @@ googleProvider.setCustomParameters({
 
 export const getIdTokenResult = async (forceRefresh = false) => await getAuth().currentUser.getIdTokenResult(forceRefresh)
 export const getIdTokenBearer = async (forceRefresh = false) => await getAuth().currentUser.getIdToken(forceRefresh)
-export const deleteFirebaseUser = async (user) => deleteUser(user);
 export const auth = getAuth();
+
+export const deleteFirebaseUser = async () => {
+    await deleteUser(getAuth().currentUser)
+};
 export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
 
 export const createAuthUserWithEmailAndPassword = async (email, password) => {

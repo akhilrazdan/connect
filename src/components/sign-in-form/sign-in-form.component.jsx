@@ -2,11 +2,13 @@ import { useState, useContext } from "react";
 import {
     signInWithGooglePopup,
     signInWithUserWithEmailAndPassword as signInAuthUserWithEmailAndPassword,
-    getIdTokenResult
+    getIdTokenResult,
+    signOutUser,
+    deleteFirebaseUser
 } from "../../utils/firebase/firebase.utils";
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
-import { setUserClaims } from "../../utils/firebase/connect-api.utils";
+import { createUser, setUserClaims } from "../../utils/firebase/connect-api.utils";
 import { UnifiedUserContext } from "../../contexts/unified-user.context";
 import { isUserAllowListed, createUserUsingBackendApi } from "../../utils/firebase/connect-api.utils";
 import ForgotPassword from "../forgot-password/forgot-password.component";
@@ -21,7 +23,7 @@ const defaultFormFields = {
 const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { email, password } = formFields;
-    const { currentUser, setCurrentUser, setRole } = useContext(UnifiedUserContext);
+    const { setRole, setCurrentUser } = useContext(UnifiedUserContext);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -36,18 +38,10 @@ const SignInForm = () => {
 
         try {
             const { user } = await signInWithGooglePopup();
-            const isUserAllowed = await isUserAllowListed();
-
-            if (!isUserAllowed) {
-                setError('Have you registered this email with us yet? Email mentorship@batonnageforum.com to add it to the allow list');
-                setCurrentUser(null);
-                return;
-            }
-            await createUserUsingBackendApi(user);
-            const idTokenResult = await getIdTokenResult(true);
-            console.log(`Setting user claims idTokenResult ${JSON.stringify(idTokenResult)}, role ${idTokenResult.claims.role}`)
-            setRole(idTokenResult.claims?.role ?? 'guest');
-            setCurrentUser({ ...user, role: idTokenResult.claims?.role ?? 'guest' });
+            const userDetails = await createUserUsingBackendApi(user)
+            console.log(`Setting currentUser to ${JSON.stringify(user)} and role to ${userDetails.role_name}`)
+            setCurrentUser(user);
+            setRole(userDetails.role_name);
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {
                 setError("Cannot create user, email already in use");
@@ -68,19 +62,24 @@ const SignInForm = () => {
         try {
             setError('')
             const { user } = await signInAuthUserWithEmailAndPassword(email, password)
-            const isUserAllowed = await isUserAllowListed();
+            // const isUserAllowed = await isUserAllowListed();
 
-            if (!isUserAllowed) {
-                setError('Your email is not authorized for the mentorship program per our records. Email mentorship@batonnageforum.com for further clarification.');
-                await setUserClaims();
-                setCurrentUser(null);
-                return;
-            }
-            console.log("Maybe create an account")
-            const idTokenResult = await getIdTokenResult(true);
-            console.log(`Setting idTokenResult after sign in ${idTokenResult.claims?.role ?? 'guest'} ${idTokenResult}, role ${idTokenResult.claims.role}`)
-            setRole(idTokenResult.claims?.role ?? 'guest')
-            setCurrentUser({ ...user, role: idTokenResult.claims?.role ?? 'guest' });
+            // if (!isUserAllowed) {
+            //     await signOutUser();
+            //     setError('Your email is not authorized for the mentorship program per our records. Email mentorship@batonnageforum.com for further clarification.');
+            //     setCurrentUser(null);
+            //     return;
+            // }
+            // const idTokenResult = await getIdTokenResult(true);
+            // console.log(`Setting idTokenResult after sign in ${idTokenResult.claims?.role ?? 'guest'} ${idTokenResult}`)
+            // setRole(idTokenResult.claims?.role ?? 'guest')
+            // const updatedUser = { ...user, role: idTokenResult.claims?.role ?? 'guest' };
+            // setCurrentUser(updatedUser);
+            // if (updatedUser.role === 'mentee') {
+            //     console.log(`Setting mentee logged in to true`)
+            //     setMenteeLoggedIn(true)
+            // }
+            // setCurrentUser(updatedUser);
             resetFormFields();
         } catch (error) {
             let errorMessage = error.message;

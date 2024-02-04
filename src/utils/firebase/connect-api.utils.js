@@ -8,7 +8,7 @@ const BACKEND_URL = process.env.REACT_APP_CONNECT_API_ENDPOINT;
 export const createUser = async ({ name, email }) => {
     try {
         const idToken = await getIdTokenBearer();
-        console.log(`Calling createMentee ${idToken} ${name} ${email}`);
+        console.log(`Calling createMentee ${name} ${email}`);
         const response = await fetch(`${BACKEND_URL}/user`, {
             method: 'POST',
             headers: {
@@ -24,7 +24,7 @@ export const createUser = async ({ name, email }) => {
         if (response.ok) {
             // The request was successful, and the user was created
             const createdUser = await response.json();
-            return { error: false, user: createdUser };
+            return { ...createdUser };
         } else {
             // The request was unsuccessful, log the status and return an error object
             console.error('Failed to create user. Status:', response.status);
@@ -38,8 +38,8 @@ export const createUser = async ({ name, email }) => {
 
     }
 };
-export const getUser = async ({ }) => {
-    console.log(`Backend : ${BACKEND_URL}`)
+export const getUser = async () => {
+    console.log(`Calling GET ${BACKEND_URL}/user`)
     try {
         const idToken = await getIdTokenBearer();
         const response = await fetch(`${BACKEND_URL}/user`, {
@@ -47,16 +47,15 @@ export const getUser = async ({ }) => {
                 'Authorization': `Bearer ${idToken}` // Include the ID token in the request headers
             }
         });
-        console.log(`Calling getUser ${idToken} ${response.ok}`);
         if (response.ok) {
             // The request was successful, and the user exists
             const userDetails = await response.json()
-            console.log(`response userDetails ${JSON.stringify(userDetails)}`)
+            console.log(`GET /user returned ${JSON.stringify(userDetails)}`)
             return userDetails;
         } else if (response.status === 404) {
             // The request was unsuccessful, and the user does not exist
             const errorData = await response.json();
-            console.error(`AKhilz response ${JSON.stringify(errorData)}`)
+            console.error(`Getting user, error: ${JSON.stringify(errorData)}`)
             return null;
         } else {
             // Handle other potential status codes (e.g., server errors)
@@ -73,17 +72,11 @@ export const getUser = async ({ }) => {
 export const createUserUsingBackendApi = async (userAuth, additionalInformation = {}) => {
 
     try {
-        await setUserClaims()
         const displayName = additionalInformation.displayName || userAuth.displayName;
         const email = userAuth.email;
-        console.log(`Creating user account with ${userAuth.email}`)
-        // If user does not exist, proceed with creating the user
-        const userDetails = await getUser({});
-        if (!userDetails) {
-            console.log(`User details do not exist ${email} ${displayName}`)
-            const response = await createUser({ name: displayName, email })
-            return response;
-        }
+        console.log(`Creating user with ${userAuth.email}`)
+        const response = await createUser({ name: displayName, email })
+        return response;
     } catch (error) {
         console.error('Error in creating the mentee using backend API:', error)
         throw error; // rethrow the error if you want to handle it outside this function
@@ -128,9 +121,10 @@ export const isUserAllowListed = async () => {
         });
         if (response.ok) {
             // The request was successful, and the user exists
-            return true;
+            const { isMenteeAllowListed } = await response.json();
+            return isMenteeAllowListed;
         } else if (response.status === 404) {
-            console.log(`isUserAllowListed : ${response.status}`)
+            console.log(`isMenteeAllowListed : ${response.status}`)
             // The request was unsuccessful, and the user does not exist
             return false;
         } else {
@@ -161,7 +155,7 @@ export const getMentorsForMentee = async ({ }) => {
             // The request was unsuccessful, and the user does not exist
 
             const errorData = await response.json();
-            console.error(`Akhilz response ${JSON.stringify(errorData)}`)
+            console.error(`Getting mentors but errored: ${JSON.stringify(errorData)}`)
             return null;
         } else {
             // Handle other potential status codes (e.g., server errors)
