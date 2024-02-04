@@ -17,26 +17,23 @@ export const UnifiedUserContext = createContext({
 
 export const UnifiedUserProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
-    const [role, setRole] = useState('guest');
+    const [role, setRole] = useState('unsigned');
     const [isMenteeLoggedIn, setMenteeLoggedIn] = useState(false);
     const [createUserFunction, setCreateUserFunction] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
+
     useEffect(() => {
-        console.log(`Users: useEffect based on isMenteeLoggedIn ${isMenteeLoggedIn}`)
-        if (isMenteeLoggedIn) {
+        if (currentUser && ['admin', 'mentee'].includes(role)) {
             const originalPath = location.state?.from || '/';
             console.log(`Users: Authenticated, redirecting to ${originalPath}`)
             navigate(originalPath)
-        }
-    }, [isMenteeLoggedIn])
-
-    useEffect(() => {
-        if (currentUser && role == 'mentee') {
-            setMenteeLoggedIn(true)
         } else if (currentUser && role == 'guest') {
-            console.log(`Navigating to / unauthorized`)
+            console.log(`Navigating to /unauthorized`)
             navigate('/unauthorized')
+        } else {
+            console.log(`Navigating to /auth`)
+            navigate('/auth')
         }
     }, [currentUser, role])
 
@@ -58,8 +55,8 @@ export const UnifiedUserProvider = ({ children }) => {
             } else {
                 // Reset state when user signs out
                 setCurrentUser(null);
-                console.log(`Setting role from ${role} to null`)
-                setRole(null);
+                console.log(`Setting role from ${role} to unsigned`)
+                setRole('unsigned');
                 setMenteeLoggedIn(false);
             }
         });

@@ -194,3 +194,67 @@ export const signupMenteeForMentor = async ({ mentorId }) => {
         throw error; // Rethrow the error so you can handle it in the component
     }
 };
+
+export const downloadSignupReport = async () => {
+    const url = `${BACKEND_URL}/download-report`; // Adjust this to your backend endpoint
+    try {
+        const idToken = await getIdTokenBearer();
+        console.log(`Initiating download of signup report with token: ${idToken}`);
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${idToken}` // Include the ID token in the request headers
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error);
+        }
+
+        // Handle the file download
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = 'signups-report.csv'; // Name of the downloaded file
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+        console.error("Error downloading the signup report:", error);
+        throw error; // You might want to handle this differently depending on your app's error handling strategy
+    }
+};
+
+export const getAdminStatistics = async () => {
+    try {
+        const idToken = await getIdTokenBearer();
+        const response = await fetch(`${BACKEND_URL}/statistics`, {
+            headers: {
+                'Authorization': `Bearer ${idToken}` // Include the ID token in the request headers
+            }
+        });
+        if (response.ok) {
+            // The request was successful, and the user exists
+            const mentors = await response.json()
+            return mentors;
+        } else if (response.status === 404) {
+            // The request was unsuccessful, and the user does not exist
+
+            const errorData = await response.json();
+            console.error(`Getting statistics but errored: ${JSON.stringify(errorData)}`)
+            return null;
+        } else {
+            // Handle other potential status codes (e.g., server errors)
+            console.error('Received unexpected status code:', response.status);
+            return null;
+        }
+    } catch (error) {
+        // Handle network or other unexpected errors
+        console.error('An error occurred while checking if user exists:', error);
+        throw error;
+    }
+};
