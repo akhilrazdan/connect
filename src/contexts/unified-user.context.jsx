@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { onAuthStateChangedListener, getIdTokenResult, auth } from '../utils/firebase/firebase.utils';
 import { createUser, createUserUsingBackendApi, getUser } from '../utils/firebase/connect-api.utils';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const UnifiedUserContext = createContext({
     currentUser: null,
@@ -21,14 +21,13 @@ export const UnifiedUserProvider = ({ children }) => {
     const [isMenteeLoggedIn, setMenteeLoggedIn] = useState(false);
     const [createUserFunction, setCreateUserFunction] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
     useEffect(() => {
         console.log(`Users: useEffect based on isMenteeLoggedIn ${isMenteeLoggedIn}`)
         if (isMenteeLoggedIn) {
-            console.log("Users: Redirecting to /")
-            navigate('/')
-        } else {
-            navigate('/unauthorized')
-            console.log(`Users: useEffect based on isMenteeLoggedIn but not changing anything`)
+            const originalPath = location.state?.from || '/';
+            console.log(`Users: Authenticated, redirecting to ${originalPath}`)
+            navigate(originalPath)
         }
     }, [isMenteeLoggedIn])
 
@@ -36,25 +35,25 @@ export const UnifiedUserProvider = ({ children }) => {
         if (currentUser && role == 'mentee') {
             setMenteeLoggedIn(true)
         } else if (currentUser && role == 'guest') {
-            console.log(`Navigating to /unauthorized`)
+            console.log(`Navigating to / unauthorized`)
             navigate('/unauthorized')
         }
     }, [currentUser, role])
 
     useEffect(() => {
         const unsubscribe = onAuthStateChangedListener(async (user) => {
-            console.log(`Users: Current user changed to ${JSON.stringify(user)}`)
+            console.log(`Users: Current user changed to ${JSON.stringify(user)} `)
             if (user) {
                 const userDetails = await getUser()
                 if (userDetails) {
                     if (userDetails.role_name) {
-                        console.log(`Users: Setting role for ${userDetails.uid} to ${userDetails.role_name ?? 'guest'}`)
+                        console.log(`Users: Setting role for ${userDetails.uid} to ${userDetails.role_name ?? 'guest'} `)
                         setRole(userDetails.role_name ?? 'guest')
                     }
                     const updatedUser = { ...user, role: role };
                     setCurrentUser(updatedUser);
                 } else {
-                    console.log(`User: No user details found for ${user.uid}. This can happen when you are in the middle of user creation. Skipping...`)
+                    console.log(`User: No user details found for ${user.uid}.This can happen when you are in the middle of user creation.Skipping...`)
                 }
             } else {
                 // Reset state when user signs out

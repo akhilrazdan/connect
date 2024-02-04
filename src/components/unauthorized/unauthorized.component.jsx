@@ -1,7 +1,9 @@
+import { useContext, useEffect } from 'react';
 import './unauthorized.styles.scss'
+import { UnifiedUserContext } from '../../contexts/unified-user.context';
 
 const Unauthorized = () => {
-    // TODO(akhilz) Please change this to right contact. 
+
     return (
         <div className='unauthorized-container'>
             <p>You are not authorized to access the mentorship page. This could happen if your email is not marked as allowed in the Batonnage backend.</p>
